@@ -64,11 +64,16 @@ def main() -> None:
         if row.get("classification") != config["grade"]:
             continue
 
-        cents = row.get("cent")
-        if not isinstance(cents, (int, float)):
+        raw_cents = row.get("cent")
+        if raw_cents in (None, ""):
             continue
 
-        euro_price = round(float(cents) / 100, 4)
+        try:
+            cents = float(raw_cents)
+        except (TypeError, ValueError):
+            continue
+
+        euro_price = round(cents / 100, 4)
         if not 3.0 <= euro_price <= 12.0:
             raise ValueError(
                 f"Implausible price for {category_name}: {euro_price}"
@@ -81,20 +86,20 @@ def main() -> None:
     missing = sorted(expected_keys - set(prices))
 
     if missing:
-        latest_available = sorted(
+        debug_rows = [
             {
-                (
-                    (row.get("category") or {}).get("name"),
-                    row.get("classification"),
-                    row.get("dateCreated") or row.get("date"),
-                )
-                for row in rows
-                if (row.get("dateCreated") or row.get("date")) == latest_date
+                "category": (row.get("category") or {}).get("name"),
+                "classification": row.get("classification"),
+                "cent": row.get("cent"),
+                "cent_type": type(row.get("cent")).__name__,
+                "date": row.get("dateCreated") or row.get("date"),
             }
-        )
+            for row in rows
+            if (row.get("dateCreated") or row.get("date")) == latest_date
+        ][:40]
         raise RuntimeError(
             f"Missing headline prices for: {', '.join(missing)}. "
-            f"Available latest rows: {latest_available[:30]}"
+            f"Sample latest rows: {debug_rows}"
         )
 
     payload = {
