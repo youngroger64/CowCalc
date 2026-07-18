@@ -1,53 +1,229 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CowCalc MVP</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#173f2a">
+  <meta name="description" content="Know your maximum cattle bid before entering the mart ring.">
+  <title>CowCalc — Know Your Number</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="wrap">
-<h1>🐂 CowCalc</h1>
-<p>Simple MVP based on the spreadsheet logic.</p>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="#">
+        <span class="brand-mark" aria-hidden="true">CC</span>
+        <span>
+          <strong>CowCalc</strong>
+          <small>Know your number</small>
+        </span>
+      </a>
+      <div class="header-actions">
+        <button id="saveBtn" class="button button-ghost" type="button">Save</button>
+        <button id="printBtn" class="button button-ghost" type="button">Print</button>
+      </div>
+    </div>
+  </header>
 
-<div class="card">
-<label>Live Weight (kg)</label>
-<input id="weight" type="number" value="450">
+  <main class="shell page">
+    <section class="hero">
+      <div>
+        <span class="eyebrow">Mart buying calculator</span>
+        <h1>Know the most you can pay—<em>before</em> you bid.</h1>
+        <p>Estimate finishing costs, factory return and target margin using the same logic as the original cattle-finishing spreadsheet.</p>
+      </div>
+      <div class="price-source">
+        <span class="status-dot"></span>
+        <div>
+          <strong>Factory price entered manually</strong>
+          <small>Automatic prices can be added after formula approval</small>
+        </div>
+      </div>
+    </section>
 
-<label>Days Feeding</label>
-<input id="days" type="number" value="90">
+    <section class="result-hero" aria-live="polite">
+      <div class="result-heading">
+        <span>Your maximum bid</span>
+        <strong id="maxBidHero">€0.00/kg</strong>
+        <small id="maxPurchaseHero">Maximum purchase price €0.00</small>
+      </div>
+      <div id="decisionBadge" class="decision decision-neutral">Enter a mart price</div>
+      <div class="hero-metrics">
+        <div><span>Expected factory return</span><strong id="factoryReturnHero">€0</strong></div>
+        <div><span>Target margin</span><strong id="targetMarginHero">€0</strong></div>
+        <div><span>Margin at entered bid</span><strong id="actualMarginHero">€0</strong></div>
+      </div>
+    </section>
 
-<label>Daily Gain (kg)</label>
-<input id="gain" type="number" step="0.1" value="1.5">
+    <nav class="tabs" aria-label="Calculator views">
+      <button class="tab is-active" data-tab="quick" type="button">Quick calculation</button>
+      <button class="tab" data-tab="costs" type="button">Full cost breakdown</button>
+      <button class="tab" data-tab="results" type="button">Results</button>
+    </nav>
 
-<label>Kill Out %</label>
-<input id="kill" type="number" value="50">
+    <form id="calculator" novalidate>
+      <section id="quick" class="tab-panel is-active">
+        <div class="grid two">
+          <article class="card">
+            <div class="card-title">
+              <span class="step">1</span>
+              <div><h2>Animal and mart</h2><p>Details known before or during bidding.</p></div>
+            </div>
+            <div class="form-grid">
+              <label>
+                <span>Live weight</span>
+                <div class="input-unit"><input id="purchaseWeight" type="number" min="1" step="1" value="450"><b>kg</b></div>
+              </label>
+              <label>
+                <span>Mart price being considered</span>
+                <div class="input-unit"><b>€</b><input id="martPriceKg" type="number" min="0" step="0.01" value="3.90"><b>/kg</b></div>
+              </label>
+              <label>
+                <span>Days feeding</span>
+                <div class="input-unit"><input id="daysFed" type="number" min="1" step="1" value="30"><b>days</b></div>
+              </label>
+              <label>
+                <span>Daily liveweight gain</span>
+                <div class="input-unit"><input id="dailyGain" type="number" min="0" step="0.05" value="1.50"><b>kg/day</b></div>
+              </label>
+              <label>
+                <span>Kill-out percentage</span>
+                <div class="input-unit"><input id="killout" type="number" min="1" max="100" step="0.1" value="50"><b>%</b></div>
+              </label>
+            </div>
+            <div class="mini-summary">
+              <div><span>Purchase cost</span><strong id="purchaseCost">€0.00</strong></div>
+              <div><span>Expected final weight</span><strong id="finalWeight">0 kg</strong></div>
+              <div><span>Expected carcass</span><strong id="carcassWeight">0 kg</strong></div>
+            </div>
+          </article>
 
-<label>Feed Cost / Day (€)</label>
-<input id="feed" type="number" step="0.01" value="4.50">
+          <article class="card">
+            <div class="card-title">
+              <span class="step">2</span>
+              <div><h2>Factory return</h2><p>Use a current quote or expected paid price.</p></div>
+            </div>
+            <div class="form-grid">
+              <label>
+                <span>Base factory price</span>
+                <div class="input-unit"><b>€</b><input id="basePrice" type="number" min="0" step="0.01" value="6.93"><b>/kg</b></div>
+              </label>
+              <label>
+                <span>Breed bonus</span>
+                <div class="input-unit"><b>€</b><input id="breedBonus" type="number" step="0.01" value="0.15"><b>/kg</b></div>
+              </label>
+              <label>
+                <span>QPS adjustment</span>
+                <div class="input-unit"><b>€</b><input id="qpsBonus" type="number" step="0.01" value="0.00"><b>/kg</b></div>
+              </label>
+              <label>
+                <span>Factory charges</span>
+                <div class="input-unit"><b>€</b><input id="factoryCharges" type="number" min="0" step="0.50" value="10.50"></div>
+              </label>
+            </div>
+            <div class="mini-summary emphasis">
+              <div><span>Expected paid price</span><strong id="paidPrice">€0.00/kg</strong></div>
+              <div><span>Gross factory value</span><strong id="grossFactory">€0.00</strong></div>
+              <div><span>Net factory return</span><strong id="netFactory">€0.00</strong></div>
+            </div>
+          </article>
+        </div>
 
-<label>Other Costs (€)</label>
-<input id="other" type="number" step="0.01" value="100">
+        <article class="card margin-card">
+          <div class="card-title">
+            <span class="step">3</span>
+            <div><h2>Your profit target</h2><p>The maximum bid reserves this margin after finishing costs.</p></div>
+          </div>
+          <div class="target-control">
+            <label>
+              <span>Target margin per day</span>
+              <div class="input-unit large"><b>€</b><input id="marginPerDay" type="number" min="0" step="0.25" value="1.00"><b>/day</b></div>
+            </label>
+            <div class="target-total">
+              <span>Total target margin</span>
+              <strong id="targetMargin">€0.00</strong>
+            </div>
+          </div>
+        </article>
+      </section>
 
-<label>Factory Price €/kg</label>
-<input id="factory" type="number" step="0.01" value="7.20">
+      <section id="costs" class="tab-panel">
+        <div class="grid two">
+          <article class="card">
+            <div class="card-title">
+              <span class="step">A</span>
+              <div><h2>Feed plan</h2><p>Feed cost per day is calculated from tonne price and daily quantity.</p></div>
+            </div>
+            <div class="feed-table">
+              <div class="feed-row feed-header"><span>Feed</span><span>€/tonne</span><span>kg/day</span><span>€/day</span></div>
+              <div class="feed-row"><strong>Silage</strong><input id="silageTonne" type="number" min="0" step="1" value="30"><input id="silageKg" type="number" min="0" step="0.5" value="25"><output id="silageDay">€0.00</output></div>
+              <div class="feed-row"><strong>Ration</strong><input id="rationTonne" type="number" min="0" step="1" value="290"><input id="rationKg" type="number" min="0" step="0.1" value="6"><output id="rationDay">€0.00</output></div>
+              <div class="feed-row"><strong>Straw</strong><input id="strawTonne" type="number" min="0" step="1" value="100"><input id="strawKg" type="number" min="0" step="0.1" value="0"><output id="strawDay">€0.00</output></div>
+              <div class="feed-row"><strong>Maize silage</strong><input id="maizeTonne" type="number" min="0" step="1" value="100"><input id="maizeKg" type="number" min="0" step="0.1" value="0"><output id="maizeDay">€0.00</output></div>
+            </div>
+            <div class="mini-summary">
+              <div><span>Total feed per day</span><strong id="feedPerDay">€0.00</strong></div>
+              <div><span>Total feed period</span><strong id="feedPeriod">€0.00</strong></div>
+            </div>
+          </article>
 
-<label>Target Profit (€)</label>
-<input id="profit" type="number" value="100">
+          <article class="card">
+            <div class="card-title">
+              <span class="step">B</span>
+              <div><h2>Other finishing costs</h2><p>Flat animal costs and daily overhead.</p></div>
+            </div>
+            <div class="form-grid">
+              <label><span>Transport</span><div class="input-unit"><b>€</b><input id="transport" type="number" min="0" step="0.50" value="20"></div></label>
+              <label><span>Dose</span><div class="input-unit"><b>€</b><input id="dose" type="number" min="0" step="0.50" value="5"></div></label>
+              <label><span>Veterinary</span><div class="input-unit"><b>€</b><input id="vet" type="number" min="0" step="0.50" value="4.50"></div></label>
+              <label><span>Loss allowance</span><div class="input-unit"><b>€</b><input id="losses" type="number" min="0" step="0.50" value="2"></div></label>
+              <label><span>Annual interest rate</span><div class="input-unit"><input id="interestRate" type="number" min="0" step="0.1" value="2"><b>%</b></div></label>
+              <label><span>Overhead per day</span><div class="input-unit"><b>€</b><input id="overheadDay" type="number" min="0" step="0.10" value="0.50"><b>/day</b></div></label>
+            </div>
+            <div class="mini-summary">
+              <div><span>Interest</span><strong id="interestCost">€0.00</strong></div>
+              <div><span>Other costs</span><strong id="otherCosts">€0.00</strong></div>
+              <div><span>Total finishing costs</span><strong id="finishingCosts">€0.00</strong></div>
+            </div>
+          </article>
+        </div>
+      </section>
 
-<button onclick="calc()">Calculate</button>
-</div>
+      <section id="results" class="tab-panel">
+        <article class="card results-card">
+          <div class="card-title">
+            <span class="step">✓</span>
+            <div><h2>Calculation breakdown</h2><p>Review every major figure before relying on the result.</p></div>
+          </div>
+          <div class="results-grid">
+            <div><span>Purchase weight</span><strong id="rPurchaseWeight">0 kg</strong></div>
+            <div><span>Purchase price at entered bid</span><strong id="rPurchasePrice">€0.00</strong></div>
+            <div><span>Liveweight gain</span><strong id="rLiveGain">0 kg</strong></div>
+            <div><span>Final liveweight</span><strong id="rFinalWeight">0 kg</strong></div>
+            <div><span>Expected carcass weight</span><strong id="rCarcass">0 kg</strong></div>
+            <div><span>Net factory return</span><strong id="rFactory">€0.00</strong></div>
+            <div><span>Finishing costs, excluding purchase</span><strong id="rFinishing">€0.00</strong></div>
+            <div><span>Total cost at entered bid</span><strong id="rTotalCost">€0.00</strong></div>
+            <div><span>Margin at entered bid</span><strong id="rMargin">€0.00</strong></div>
+            <div><span>Margin per day</span><strong id="rMarginDay">€0.00</strong></div>
+            <div><span>Break-even factory price</span><strong id="rBreakEven">€0.00/kg</strong></div>
+            <div class="highlight"><span>Maximum bid for target margin</span><strong id="rMaxBid">€0.00/kg</strong></div>
+          </div>
+          <div class="assumption">
+            <strong>Calculation note</strong>
+            <p>The maximum bid equals expected net factory return, less finishing costs and target margin, divided by the animal’s purchase weight. Figures are estimates and should be checked against current quotes and the farmer’s own costs.</p>
+          </div>
+        </article>
+      </section>
+    </form>
 
-<div class="results">
-<h2>Results</h2>
-<p><b>Expected Carcass Weight:</b> <span id="cw"></span> kg</p>
-<p><b>Factory Value:</b> €<span id="fv"></span></p>
-<p><b>Total Finishing Cost:</b> €<span id="fc"></span></p>
-<p><b>Maximum Purchase Price:</b> €<span id="pp"></span></p>
-<p><b>Maximum Bid €/kg:</b> €<span id="kg"></span></p>
-</div>
-</div>
-<script src="js/app.js"></script>
+    <footer>
+      <span>CowCalc demonstration</span>
+      <span>Not financial or veterinary advice</span>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="js/app.js"></script>
 </body>
 </html>
