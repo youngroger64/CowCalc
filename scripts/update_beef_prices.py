@@ -1,43 +1,130 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import json, re, sys
+
+import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from playwright.sync_api import sync_playwright
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
-URL="https://publicapps.agriculture.gov.ie/bpw-ui/"
-OUTPUT=Path(__file__).resolve().parents[1]/"data"/"beef-prices.json"
-LABELS={"steer":r"\bSteer\b","heifer":r"\bHeifer\b","cow":r"\bCow\b","youngBull":r"\bYoung\s+Bull\b","bull":r"\bBull\b"}
+BASE = "https://publicapps.agriculture.gov.ie/bpw-api/api/v1"
+OUTPUT = Path(__file__).resolve().parents[1] / "data" / "beef-prices.json"
 
-def extract(text, pattern):
-    m=re.search(pattern,text,re.I)
-    if not m: raise ValueError(f"Missing category {pattern}")
-    block=text[m.end():m.end()+900]
-    for rgx,div in [(r"€\s*([0-9]+(?:\.[0-9]{1,3})?)",1),(r"\b([3-9][0-9]{2})\s*(?:c|cent)",100),(r"\b([3-9]\.[0-9]{2})\b",1)]:
-        x=re.search(rgx,block,re.I)
-        if x:
-            v=float(x.group(1))/div
-            if 3<=v<=12:return round(v,2)
-    raise ValueError(f"No plausible price near {pattern}")
+CATEGORY_CONFIG = {
+    "Steer": {"key": "steer", "grade": "R3"},
+    "Heifer": {"key": "heifer", "grade": "R3"},
+    "Cow": {"key": "cow", "grade": "O4"},
+    "Bull": {"key": "bull", "grade": "O2"},
+    "Young Bull": {"key": "youngBull", "grade": "U3"},
+}
 
-def main():
-    with sync_playwright() as p:
-        browser=p.chromium.launch(headless=True)
-        page=browser.new_page(viewport={"width":1440,"height":1200})
-        page.goto(URL,wait_until="networkidle",timeout=90000)
-        page.wait_for_timeout(3000)
-        text=page.locator("body").inner_text()
-        browser.close()
-    wm=re.search(r"Week\s+Ending\s*:?\s*([^\n]+)",text,re.I)
-    week=wm.group(1).strip() if wm else None
-    prices={k:extract(text,LABELS[k]) for k in ("steer","heifer","cow","youngBull","bull")}
-    if len(set(prices.values()))<2:raise ValueError(f"Suspicious values: {prices}")
-    payload={"source":"DAFM Beef Pricewatch","sourceUrl":URL,"weekEnding":week,"updatedAt":datetime.now(timezone.utc).isoformat(),"status":"verified","note":"Automatically retrieved from official DAFM Beef Pricewatch.","prices":prices}
-    tmp=OUTPUT.with_suffix(".json.tmp")
-    tmp.write_text(json.dumps(payload,indent=2),encoding="utf-8")
-    tmp.replace(OUTPUT)
-    print(json.dumps(payload,indent=2))
-if __name__=="__main__":
-    try: main()
-    except Exception as e:
-        print(f"Update failed; existing file retained: {e}",file=sys.stderr);raise SystemExit(1)
+
+def fetch_json(url: str):
+    request = Request(
+        url,
+        headers={
+            "Accept": "application/json",
+            "User-Agent": "CowCalc/1.0",
+        },
+    )
+    with urlopen(request, timeout=60) as response:
+        return json.load(response)
+
+
+def main() -> None:
+    date_rows = fetch_json(f"{BASE}/prices/headline/dates")
+
+    dates = sorted(
+        {row["date"] for row in date_rows if row.get("date")},
+        reverse=True,
+    )
+    if not dates:
+        raise RuntimeError("No dates returned by DAFM")
+
+    latest_date = dates[0]
+    start_date = dates[7] if len(dates) > 7 else dates[-1]
+
+    query = urlencode({"start": start_date, "end": latest_date})
+    rows = fetch_json(f"{BASE}/prices/headline?{query}")
+
+    prices = {}
+    grades = {}
+
+    for row in rows:
+        row_date = row.get("dateCreated") or row.get("date")
+        if row_date != latest_date:
+            continue
+
+        category_name = (row.get("category") or {}).get("name")
+        config = CATEGORY_CONFIG.get(category_name)
+        if not config:
+            continue
+
+        if row.get("classification") != config["grade"]:
+            continue
+
+        cents = row.get("cent")
+        if not isinstance(cents, (int, float)):
+            continue
+
+        euro_price = round(float(cents) / 100, 4)
+        if not 3.0 <= euro_price <= 12.0:
+            raise ValueError(
+                f"Implausible price for {category_name}: {euro_price}"
+            )
+
+        prices[config["key"]] = euro_price
+        grades[config["key"]] = config["grade"]
+
+    expected_keys = {config["key"] for config in CATEGORY_CONFIG.values()}
+    missing = sorted(expected_keys - set(prices))
+
+    if missing:
+        latest_available = sorted(
+            {
+                (
+                    (row.get("category") or {}).get("name"),
+                    row.get("classification"),
+                    row.get("dateCreated") or row.get("date"),
+                )
+                for row in rows
+                if (row.get("dateCreated") or row.get("date")) == latest_date
+            }
+        )
+        raise RuntimeError(
+            f"Missing headline prices for: {', '.join(missing)}. "
+            f"Available latest rows: {latest_available[:30]}"
+        )
+
+    payload = {
+        "source": "DAFM Beef Pricewatch",
+        "sourceUrl": "https://publicapps.agriculture.gov.ie/bpw-ui/",
+        "weekEnding": latest_date,
+        "updatedAt": datetime.now(timezone.utc).isoformat(),
+        "status": "verified",
+        "note": (
+            "Official weighted-average headline prices paid, inclusive of VAT. "
+            "The farmer's expected factory price remains editable."
+        ),
+        "grades": grades,
+        "prices": prices,
+    }
+
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    temporary = OUTPUT.with_suffix(".json.tmp")
+    temporary.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    temporary.replace(OUTPUT)
+
+    print(json.dumps(payload, indent=2))
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as error:
+        print(
+            f"Price update failed; existing file retained: {error}",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
