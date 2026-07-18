@@ -1,0 +1,6 @@
+body{font-family:Arial,sans-serif;background:#eef2f5;margin:0}
+.wrap{max-width:700px;margin:30px auto;padding:20px}
+.card,.results{background:#fff;padding:20px;border-radius:10px;margin-bottom:20px}
+label{display:block;margin-top:10px;font-weight:bold}
+input{width:100%;padding:8px;margin-top:4px}
+button{margin-top:20px;padding:12px 20px;background:#2e7d32;color:#fff;border:0;border-radius:6px;cursor:pointer}
