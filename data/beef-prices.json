@@ -1,0 +1,15 @@
+{
+  "source": "DAFM Beef Pricewatch",
+  "sourceUrl": "https://publicapps.agriculture.gov.ie/bpw-ui/",
+  "weekEnding": null,
+  "updatedAt": null,
+  "status": "seed",
+  "note": "Demo defaults only. Use the editable expected price until the automatic updater has completed successfully.",
+  "prices": {
+    "steer": 6.93,
+    "heifer": 6.95,
+    "cow": 6.67,
+    "bull": 6.23,
+    "youngBull": 6.84
+  }
+}

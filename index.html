@@ -33,10 +33,10 @@
         <p>Estimate finishing costs, factory return and target margin using the same logic as the original cattle-finishing spreadsheet.</p>
       </div>
       <div class="price-source">
-        <span class="status-dot"></span>
+        <span id="priceStatusDot" class="status-dot"></span>
         <div>
-          <strong>Factory price entered manually</strong>
-          <small>Automatic prices can be added after formula approval</small>
+          <strong id="priceStatusTitle">Loading price information…</strong>
+          <small id="priceStatusText">The expected price remains editable at all times.</small>
         </div>
       </div>
     </section>
@@ -105,7 +105,23 @@
             </div>
             <div class="form-grid">
               <label>
-                <span>Base factory price</span>
+                <span>Animal category</span>
+                <div class="select-wrap">
+                  <select id="animalCategory">
+                    <option value="steer">Steer</option>
+                    <option value="heifer">Heifer</option>
+                    <option value="cow">Cow</option>
+                    <option value="youngBull">Young bull</option>
+                    <option value="bull">Bull</option>
+                  </select>
+                </div>
+              </label>
+              <label>
+                <span>Official suggested price</span>
+                <div class="input-unit suggested"><b>€</b><input id="suggestedPrice" type="number" step="0.01" readonly><b>/kg</b></div>
+              </label>
+              <label>
+                <span>Your expected factory price</span>
                 <div class="input-unit"><b>€</b><input id="basePrice" type="number" min="0" step="0.01" value="6.93"><b>/kg</b></div>
               </label>
               <label>
@@ -120,6 +136,10 @@
                 <span>Factory charges</span>
                 <div class="input-unit"><b>€</b><input id="factoryCharges" type="number" min="0" step="0.50" value="10.50"></div>
               </label>
+            </div>
+            <div class="source-line">
+              <span id="inlinePriceSource">Suggested values are demo defaults</span>
+              <button id="useSuggestedBtn" type="button">Use suggested price</button>
             </div>
             <div class="mini-summary emphasis">
               <div><span>Expected paid price</span><strong id="paidPrice">€0.00/kg</strong></div>

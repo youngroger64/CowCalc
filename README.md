@@ -1,31 +1,29 @@
-# CowCalc Demo
+# CowCalc category + price-source build
 
-A phone-first static web application based on the **Beef Feeding** worksheet in the supplied `Finishing Costs.xlsx` workbook.
+Adds a cattle-category dropdown, suggested category prices from `data/beef-prices.json`, source/update status, a one-click “Use suggested price” button, and permanent manual override.
 
-## Included calculations
+The initial JSON values are clearly marked as demo defaults. DAFM Beef Pricewatch reports final average prices paid inclusive of VAT; a farmer’s expected factory deal may differ.
 
-- Purchase cost from live weight × mart €/kg
-- Liveweight gain and expected final weight
-- Expected carcass weight using kill-out %
-- Feed cost per day and over the finishing period
-- Transport, dosing, veterinary, loss allowance, interest and daily overhead
-- Factory value using base price + breed bonus + QPS adjustment, less charges
-- Actual margin and margin/day at the entered mart bid
-- Maximum total purchase price and maximum live €/kg bid after reserving a target margin
-- Break-even factory price
+## Deploy
 
-## Run locally
-
-Open `index.html` directly in a browser, or run:
+Upload the unzipped files to GitHub. Then on the VM:
 
 ```bash
-python3 -m http.server 8080
+cd ~/cowcalc
+chmod +x deploy.sh
+./deploy.sh
 ```
 
-## Deploy on the VM
+## Test the official updater manually
 
-Pull the repository and serve the directory through Nginx, or temporarily run the Python command above.
+```bash
+cd ~/cowcalc
+python3 -m venv .venv
+source .venv/bin/activate
+pip install playwright
+playwright install chromium
+python scripts/update_beef_prices.py
+cat data/beef-prices.json
+```
 
-## Important
-
-This is a demonstration and uses user-entered prices. All assumptions and formulas should be reviewed and approved by the farmer before commercial use.
+Compare the result with the official Beef Pricewatch page before scheduling it. The source is JavaScript-driven and may change, so the updater retains the previous valid file whenever parsing fails.

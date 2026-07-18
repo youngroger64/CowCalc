@@ -1,10 +1,45 @@
 (() => {
   const $ = id => document.getElementById(id);
-  const inputs = [...document.querySelectorAll('input')];
+  const inputs = [...document.querySelectorAll('input, select')];
   const money = n => new Intl.NumberFormat('en-IE',{style:'currency',currency:'EUR',minimumFractionDigits:2}).format(Number.isFinite(n)?n:0);
   const num = (id) => Number($(id).value) || 0;
   const set = (id, text) => { $(id).textContent = text; };
   const signedClass = (el, n) => { el.classList.toggle('positive', n >= 0); el.classList.toggle('negative', n < 0); };
+
+  let officialPrices = null;
+  const categoryNames = {steer:'Steer',heifer:'Heifer',cow:'Cow',youngBull:'Young bull',bull:'Bull'};
+
+  function applySuggestedPrice(useIt = false) {
+    if (!officialPrices) return;
+    const category = $('animalCategory').value;
+    const value = Number(officialPrices.prices?.[category]);
+    if (!Number.isFinite(value)) return;
+    $('suggestedPrice').value = value.toFixed(2);
+    if (useIt) $('basePrice').value = value.toFixed(2);
+    calculate();
+  }
+
+  async function loadOfficialPrices() {
+    const dot = $('priceStatusDot');
+    try {
+      const response = await fetch('data/beef-prices.json', {cache:'no-store'});
+      if (!response.ok) throw new Error('Price file unavailable');
+      officialPrices = await response.json();
+      applySuggestedPrice(false);
+      const isLive = officialPrices.status === 'verified' && officialPrices.updatedAt;
+      dot.classList.add(isLive ? 'ok' : 'warn');
+      $('priceStatusTitle').textContent = isLive ? 'Official cattle prices available' : 'Suggested demo prices loaded';
+      const week = officialPrices.weekEnding ? `Week ending ${officialPrices.weekEnding}` : 'No verified update has run yet';
+      $('priceStatusText').textContent = `${week}. Your expected price remains editable.`;
+      $('inlinePriceSource').textContent = `${officialPrices.source || 'Price source'} · ${week}`;
+    } catch (error) {
+      dot.classList.add('fail');
+      $('priceStatusTitle').textContent = 'Automatic price unavailable';
+      $('priceStatusText').textContent = 'Continue using your own expected factory price.';
+      $('inlinePriceSource').textContent = 'Manual price mode';
+      $('suggestedPrice').value = '';
+    }
+  }
 
   function calculate() {
     const weight = num('purchaseWeight');
@@ -110,6 +145,11 @@
   }
 
   inputs.forEach(input => input.addEventListener('input', calculate));
+  $('animalCategory').addEventListener('change', () => applySuggestedPrice(false));
+  $('useSuggestedBtn').addEventListener('click', () => {
+    applySuggestedPrice(true);
+    toast(`${categoryNames[$('animalCategory').value]} suggested price applied`);
+  });
 
   document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('is-active'));
@@ -143,5 +183,6 @@
     } catch (_) {}
   }
 
+  loadOfficialPrices();
   calculate();
 })();
