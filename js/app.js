@@ -16,6 +16,7 @@
     if (!Number.isFinite(value)) return;
     $('suggestedPrice').value = value.toFixed(2);
     if (useIt) $('basePrice').value = value.toFixed(2);
+    if ($('quickFactoryPrice')) $('quickFactoryPrice').value = value.toFixed(2);
     calculate();
   }
 
@@ -39,6 +40,105 @@
       $('inlinePriceSource').textContent = 'Manual price mode';
       $('suggestedPrice').value = '';
     }
+  }
+
+
+  let quickDays = 90;
+
+  function syncQuickCategory() {
+    const category = $('quickCategory').value;
+    $('animalCategory').value = category;
+    applySuggestedPrice(false);
+
+    if (officialPrices) {
+      const value = Number(officialPrices.prices?.[category]);
+      if (Number.isFinite(value)) {
+        $('quickFactoryPrice').value = value.toFixed(2);
+        $('basePrice').value = value.toFixed(2);
+      }
+    }
+  }
+
+  function calculateQuick() {
+    const weight = Number($('quickWeight').value) || 0;
+    const currentBid = Number($('quickCurrentBid').value) || 0;
+    const targetProfit = Number($('quickProfitSlider').value) || 0;
+
+    $('purchaseWeight').value = weight;
+    $('martPriceKg').value = weight > 0 ? (currentBid / weight).toFixed(4) : 0;
+    $('daysFed').value = quickDays;
+    $('marginPerDay').value = quickDays > 0 ? (targetProfit / quickDays).toFixed(4) : 0;
+
+    calculate();
+
+    const maxText = $('maxPurchaseHero').textContent || '';
+    const bidText = $('maxBidHero').textContent || '';
+
+    // Read the underlying values directly from the same model.
+    const liveGain = (Number($('dailyGain').value) || 0) * quickDays;
+    const finalWeight = weight + liveGain;
+    const carcass = finalWeight * ((Number($('killout').value) || 0) / 100);
+
+    const feeds = [
+      [Number($('silageTonne').value)||0, Number($('silageKg').value)||0],
+      [Number($('rationTonne').value)||0, Number($('rationKg').value)||0],
+      [Number($('strawTonne').value)||0, Number($('strawKg').value)||0],
+      [Number($('maizeTonne').value)||0, Number($('maizeKg').value)||0]
+    ];
+    const feedDay = feeds.reduce((sum,[tonne,kg]) => sum + tonne/1000*kg,0);
+    const purchaseForInterest = currentBid;
+    const interest = purchaseForInterest * ((Number($('interestRate').value)||0)/100) / 365 * quickDays;
+    const finishing =
+      (Number($('transport').value)||0) +
+      (Number($('dose').value)||0) +
+      (Number($('vet').value)||0) +
+      (Number($('losses').value)||0) +
+      interest +
+      ((Number($('overheadDay').value)||0) * quickDays) +
+      (feedDay * quickDays);
+
+    const paidPrice =
+      (Number($('quickFactoryPrice').value)||0) +
+      (Number($('breedBonus').value)||0) +
+      (Number($('qpsBonus').value)||0);
+
+    const netFactory = carcass * paidPrice - (Number($('factoryCharges').value)||0);
+    const maxPurchase = netFactory - finishing - targetProfit;
+    const maxKg = weight > 0 ? maxPurchase / weight : 0;
+    const actualProfit = netFactory - finishing - currentBid;
+    const difference = maxPurchase - currentBid;
+
+    $('quickMaxPrice').textContent = money(maxPurchase);
+    $('quickMaxKg').textContent = money(maxKg) + '/kg liveweight';
+    $('quickProfit').textContent = money(actualProfit);
+    $('quickProfitLabel').textContent = money(targetProfit).replace('.00','');
+    $('quickDifference').textContent =
+      difference >= 0
+        ? money(difference) + ' below limit'
+        : money(Math.abs(difference)) + ' over limit';
+
+    const decision = $('quickDecision');
+    decision.className = 'quick-decision';
+
+    if (!currentBid) {
+      decision.textContent = 'Enter a bid';
+      decision.classList.add('neutral');
+      $('quickStatus').textContent = 'Ready';
+    } else if (difference >= 50) {
+      decision.textContent = 'Bid';
+      decision.classList.add('buy');
+      $('quickStatus').textContent = 'Good margin';
+    } else if (difference >= 0) {
+      decision.textContent = 'Caution';
+      decision.classList.add('caution');
+      $('quickStatus').textContent = 'Near limit';
+    } else {
+      decision.textContent = 'Stop';
+      decision.classList.add('stop');
+      $('quickStatus').textContent = 'Over limit';
+    }
+
+    signedClass($('quickProfit'), actualProfit);
   }
 
   function calculate() {
@@ -151,6 +251,25 @@
     toast(`${categoryNames[$('animalCategory').value]} suggested price applied`);
   });
 
+
+  ['quickWeight','quickCurrentBid','quickProfitSlider'].forEach(id => {
+    $(id).addEventListener('input', calculateQuick);
+  });
+
+  $('quickCategory').addEventListener('change', () => {
+    syncQuickCategory();
+    calculateQuick();
+  });
+
+  document.querySelectorAll('.day-buttons button').forEach(button => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('.day-buttons button').forEach(b => b.classList.remove('is-active'));
+      button.classList.add('is-active');
+      quickDays = Number(button.dataset.days);
+      calculateQuick();
+    });
+  });
+
   document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('is-active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('is-active'));
@@ -183,6 +302,6 @@
     } catch (_) {}
   }
 
-  loadOfficialPrices();
+  loadOfficialPrices().then(() => { syncQuickCategory(); calculateQuick(); });
   calculate();
 })();

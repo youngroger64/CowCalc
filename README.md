@@ -1,29 +1,13 @@
-# CowCalc category + price-source build
+# CowCalc Quick Entry Build
 
-Adds a cattle-category dropdown, suggested category prices from `data/beef-prices.json`, source/update status, a one-click “Use suggested price” button, and permanent manual override.
+This version adds a mart-first quick entry screen at the top:
 
-The initial JSON values are clearly marked as demo defaults. DAFM Beef Pricewatch reports final average prices paid inclusive of VAT; a farmer’s expected factory deal may differ.
+- Animal type
+- Live weight
+- Official factory price
+- Current total bid
+- Minimum-profit slider
+- 30 / 60 / 90 day presets
+- Immediate BID / CAUTION / STOP result
 
-## Deploy
-
-Upload the unzipped files to GitHub. Then on the VM:
-
-```bash
-cd ~/cowcalc
-chmod +x deploy.sh
-./deploy.sh
-```
-
-## Test the official updater manually
-
-```bash
-cd ~/cowcalc
-python3 -m venv .venv
-source .venv/bin/activate
-pip install playwright
-playwright install chromium
-python scripts/update_beef_prices.py
-cat data/beef-prices.json
-```
-
-Compare the result with the official Beef Pricewatch page before scheduling it. The source is JavaScript-driven and may change, so the updater retains the previous valid file whenever parsing fails.
+The existing full calculator remains underneath for detailed cost adjustments.
