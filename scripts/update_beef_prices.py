@@ -32,13 +32,38 @@ def fetch_json(url: str):
         return json.load(response)
 
 
-def main() -> None:
-    date_rows = fetch_json(f"{BASE}/prices/headline/dates")
+def extract_dates(payload) -> list[str]:
+    if isinstance(payload, list):
+        values = []
+        for row in payload:
+            if isinstance(row, str):
+                values.append(row)
+            elif isinstance(row, dict):
+                value = row.get("date") or row.get("dateCreated")
+                if value:
+                    values.append(value)
+        return sorted(set(values), reverse=True)
 
-    dates = sorted(
-        {row["date"] for row in date_rows if row.get("date")},
-        reverse=True,
-    )
+    if isinstance(payload, dict):
+        raw_dates = payload.get("date") or payload.get("dates") or []
+        if isinstance(raw_dates, list):
+            values = []
+            for item in raw_dates:
+                if isinstance(item, str):
+                    values.append(item)
+                elif isinstance(item, dict):
+                    value = item.get("date") or item.get("dateCreated")
+                    if value:
+                        values.append(value)
+            return sorted(set(values), reverse=True)
+
+    return []
+
+
+def main() -> None:
+    date_payload = fetch_json(f"{BASE}/prices/headline/dates")
+    dates = extract_dates(date_payload)
+
     if not dates:
         raise RuntimeError("No dates returned by DAFM")
 
@@ -46,12 +71,20 @@ def main() -> None:
     start_date = dates[7] if len(dates) > 7 else dates[-1]
 
     query = urlencode({"start": start_date, "end": latest_date})
-    rows = fetch_json(f"{BASE}/prices/headline?{query}")
+    rows = fetch_json(f"{BASE}/prices/national/headline?{query}")
 
-    prices = {}
-    grades = {}
+    if not isinstance(rows, list):
+        raise RuntimeError(
+            f"Unexpected national headline response type: {type(rows).__name__}"
+        )
+
+    prices: dict[str, float] = {}
+    grades: dict[str, str] = {}
 
     for row in rows:
+        if not isinstance(row, dict):
+            continue
+
         row_date = row.get("dateCreated") or row.get("date")
         if row_date != latest_date:
             continue
@@ -74,43 +107,46 @@ def main() -> None:
             continue
 
         euro_price = round(cents / 100, 4)
+
         if not 3.0 <= euro_price <= 12.0:
             raise ValueError(
-                f"Implausible price for {category_name}: {euro_price}"
+                f"Implausible national price for {category_name}: {euro_price}"
             )
 
         prices[config["key"]] = euro_price
         grades[config["key"]] = config["grade"]
 
-    expected_keys = {config["key"] for config in CATEGORY_CONFIG.values()}
+    expected_keys = {item["key"] for item in CATEGORY_CONFIG.values()}
     missing = sorted(expected_keys - set(prices))
 
     if missing:
-        debug_rows = [
+        sample = [
             {
                 "category": (row.get("category") or {}).get("name"),
                 "classification": row.get("classification"),
                 "cent": row.get("cent"),
-                "cent_type": type(row.get("cent")).__name__,
                 "date": row.get("dateCreated") or row.get("date"),
             }
             for row in rows
-            if (row.get("dateCreated") or row.get("date")) == latest_date
+            if isinstance(row, dict)
+            and (row.get("dateCreated") or row.get("date")) == latest_date
         ][:40]
+
         raise RuntimeError(
-            f"Missing headline prices for: {', '.join(missing)}. "
-            f"Sample latest rows: {debug_rows}"
+            f"Missing national headline prices for: {', '.join(missing)}. "
+            f"Sample latest national rows: {sample}"
         )
 
     payload = {
-        "source": "DAFM Beef Pricewatch",
+        "source": "DAFM Beef Pricewatch — National Average",
         "sourceUrl": "https://publicapps.agriculture.gov.ie/bpw-ui/",
         "weekEnding": latest_date,
         "updatedAt": datetime.now(timezone.utc).isoformat(),
         "status": "verified",
+        "priceType": "nationalAverageHeadline",
         "note": (
-            "Official weighted-average headline prices paid, inclusive of VAT. "
-            "The farmer's expected factory price remains editable."
+            "Official national weighted-average headline prices paid, inclusive "
+            "of VAT. The farmer's expected factory price remains editable."
         ),
         "grades": grades,
         "prices": prices,
