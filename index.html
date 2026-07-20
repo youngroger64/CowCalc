@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#173f2a">
   <meta name="description" content="Know your maximum cattle bid before entering the mart ring.">
-  <title>CowCalc — Know Your Number</title>
+  <title>MartBid — Calculate your maximum bid before you buy</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -14,8 +14,8 @@
       <a class="brand" href="#">
         <span class="brand-mark" aria-hidden="true">CC</span>
         <span>
-          <strong>CowCalc</strong>
-          <small>Know your number</small>
+          <strong>MartBid</strong>
+          <small>Calculate before you buy</small>
         </span>
       </a>
       <div class="header-actions">
@@ -28,9 +28,8 @@
   <main class="shell page">
     <section class="hero">
       <div>
-        <span class="eyebrow">Mart buying calculator</span>
-        <h1>Know the most you can pay—<em>before</em> you bid.</h1>
-        <p>Know your maximum buying price before the next bid.</p>
+        <h1>Calculate your maximum bid <em>before you buy.</em></h1>
+        <p>Use live factory prices and your finishing costs to calculate your buying limit.</p>
       </div>
       <div class="price-source">
         <span id="priceStatusDot" class="status-dot"></span>
@@ -45,9 +44,8 @@
     <section class="quick-entry card">
       <div class="quick-head">
         <div>
-          <span class="eyebrow">Quick entry mode</span>
-          <h2>Should I keep bidding?</h2>
-          <p>Enter the essentials. Liam’s saved costs and official prices do the rest.</p>
+          <h2>Quick Bid</h2>
+          <p>Estimate your maximum buying price before placing a bid.</p>
         </div>
         <div class="quick-status" id="quickStatus">Ready</div>
       </div>
@@ -127,23 +125,19 @@
       </div>
     </section>
 
-    <section class="result-hero" aria-live="polite">
-      <div class="result-heading">
-        <span>Your maximum bid</span>
-        <strong id="maxBidHero">€0.00/kg</strong>
-        <small id="maxPurchaseHero">Maximum purchase price €0.00</small>
-      </div>
-      <div id="decisionBadge" class="decision decision-neutral">Enter a mart price</div>
-      <div class="hero-metrics">
-        <div><span>Expected factory return</span><strong id="factoryReturnHero">€0</strong></div>
-        <div><span>Target margin</span><strong id="targetMarginHero">€0</strong></div>
-        <div><span>Margin at entered bid</span><strong id="actualMarginHero">€0</strong></div>
-      </div>
-    </section>
+    
 
-    <nav class="tabs" aria-label="Calculator views">
-      <button class="tab is-active" data-tab="quick" type="button">Quick calculation</button>
-      <button class="tab" data-tab="costs" type="button">Full cost breakdown</button>
+
+
+    
+<section class="planning-intro">
+  <h2>Behind the Number</h2>
+  <p>Review or customise the assumptions used to calculate your maximum bid.</p>
+</section>
+
+<nav class="tabs" aria-label="Calculator views">
+      <button class="tab is-active" data-tab="quick" type="button">Animal &amp; Mart</button>
+      <button class="tab" data-tab="costs" type="button">Costs &amp; Assumptions</button>
       <button class="tab" data-tab="results" type="button">Results</button>
     </nav>
 
@@ -153,7 +147,7 @@
           <article class="card">
             <div class="card-title">
               <span class="step">1</span>
-              <div><h2>Animal and mart</h2><p>Details known before or during bidding.</p></div>
+              <div><h2>Animal and mart</h2><p>Enter the details known before bidding.</p></div>
             </div>
             <div class="form-grid">
               <label>
@@ -331,5 +325,6 @@
 
   <div id="toast" class="toast" role="status"></div>
   <script src="js/app.js"></script>
+  <span id="decisionBadge" hidden></span>
 </body>
 </html>
