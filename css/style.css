@@ -395,3 +395,67 @@ select:focus,
     max-width: 310px !important;
   }
 }
+/* ===== Force all card text to navy ===== */
+
+.quick-entry,
+.step-card,
+.card,
+.tab-panel,
+.results,
+.result-card {
+    color: #0F2233 !important;
+}
+
+.quick-entry *,
+.step-card *,
+.card *,
+.tab-panel *,
+.results *,
+.result-card * {
+    color: inherit;
+}
+
+/* Main headings */
+.quick-entry h1,
+.quick-entry h2,
+.quick-entry h3,
+.step-card h1,
+.step-card h2,
+.step-card h3,
+.card h1,
+.card h2,
+.card h3,
+.tab-panel h1,
+.tab-panel h2,
+.tab-panel h3 {
+    color: #0F2233 !important;
+}
+
+/* Labels */
+.quick-entry label,
+.step-card label,
+.card label,
+.tab-panel label {
+    color: #0F2233 !important;
+    font-weight: 600;
+}
+
+/* Paragraphs and helper text */
+.quick-entry p,
+.step-card p,
+.card p,
+.tab-panel p,
+.quick-entry small,
+.step-card small,
+.card small,
+.tab-panel small {
+    color: #66736F !important;
+}
+
+/* Keep positive values gold */
+.positive,
+.quick-profit,
+#quickProfit {
+    color: #D4AF37 !important;
+}
+
