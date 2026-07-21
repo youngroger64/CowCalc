@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
-git pull --ff-only origin main
+BRANCH=$(git branch --show-current)
+
+if [ -z "$BRANCH" ]; then
+  echo "Cannot deploy from a detached HEAD."
+  exit 1
+fi
+
+git pull --ff-only origin "$BRANCH"
 sudo mkdir -p /var/www/cowcalc
 sudo rsync -av --delete \
   --exclude='.git/' \
