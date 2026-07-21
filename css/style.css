@@ -481,3 +481,62 @@ CSS
   -webkit-text-fill-color: #0f2233 !important;
   opacity: 1 !important;
 }
+
+
+/* MARTBID FINAL CARD TYPOGRAPHY */
+
+/* Every piece of text inside white cards */
+.quick-entry,
+.quick-entry *,
+.card,
+.card *,
+.step-card,
+.step-card *,
+.tab-panel,
+.tab-panel *,
+.results-card,
+.results-card * {
+  color: #0f2233 !important;
+  -webkit-text-fill-color: #0f2233 !important;
+  opacity: 1 !important;
+}
+
+/* Descriptions and helper copy remain softer */
+.quick-entry p,
+.quick-entry small,
+.card p,
+.card small,
+.step-card p,
+.step-card small,
+.tab-panel p,
+.tab-panel small {
+  color: #66736f !important;
+  -webkit-text-fill-color: #66736f !important;
+}
+
+/* Positive financial figures stay gold */
+.quick-profit,
+.quick-profit *,
+.positive,
+#quickProfit,
+#quickProfitLabel {
+  color: #d4af37 !important;
+  -webkit-text-fill-color: #d4af37 !important;
+}
+
+/* Decision panels keep their intended colours */
+.quick-decision.buy {
+  color: #0a2f25 !important;
+  -webkit-text-fill-color: #0a2f25 !important;
+}
+
+.quick-decision.caution {
+  color: #8c6200 !important;
+  -webkit-text-fill-color: #8c6200 !important;
+}
+
+.quick-decision.stop {
+  color: #8c2e25 !important;
+  -webkit-text-fill-color: #8c2e25 !important;
+}
+
