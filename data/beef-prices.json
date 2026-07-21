@@ -1,15 +1,23 @@
 {
-  "source": "DAFM Beef Pricewatch",
+  "source": "DAFM Beef Pricewatch \u2014 National Average",
   "sourceUrl": "https://publicapps.agriculture.gov.ie/bpw-ui/",
-  "weekEnding": null,
-  "updatedAt": null,
-  "status": "seed",
-  "note": "Demo defaults only. Use the editable expected price until the automatic updater has completed successfully.",
+  "weekEnding": "2026-07-12",
+  "updatedAt": "2026-07-21T21:31:46.545286+00:00",
+  "status": "verified",
+  "priceType": "nationalAverageHeadline",
+  "note": "Official national weighted-average headline prices paid, inclusive of VAT. The farmer's expected factory price remains editable.",
+  "grades": {
+    "youngBull": "U3",
+    "heifer": "R3",
+    "steer": "R3",
+    "bull": "O2",
+    "cow": "O4"
+  },
   "prices": {
-    "steer": 6.93,
-    "heifer": 6.95,
-    "cow": 6.67,
-    "bull": 6.23,
-    "youngBull": 6.84
+    "youngBull": 7.0646,
+    "heifer": 6.9507,
+    "steer": 6.9372,
+    "bull": 6.0304,
+    "cow": 6.1464
   }
 }
