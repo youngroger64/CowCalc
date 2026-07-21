@@ -64,3 +64,26 @@ button,input{font:inherit}.shell{width:min(1120px,calc(100% - 32px));margin-inli
 @media(max-width:430px){
   .quick-grid{grid-template-columns:1fr}
 }
+
+
+/* MartBid logo only */
+.brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.brand-logo {
+  display: block;
+  width: auto;
+  height: 58px;
+  max-width: 340px;
+  object-fit: contain;
+}
+
+@media (max-width: 700px) {
+  .brand-logo {
+    height: 44px;
+    max-width: 235px;
+  }
+}
