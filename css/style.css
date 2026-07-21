@@ -473,3 +473,11 @@ cat >> css/style.css <<'CSS'
 }
 CSS
 
+
+
+/* Definitive Quick Bid title colour */
+#quickBidTitle {
+  color: #0f2233 !important;
+  -webkit-text-fill-color: #0f2233 !important;
+  opacity: 1 !important;
+}
