@@ -118,7 +118,7 @@
     $('quickProfitLabel').textContent = money(targetProfit).replace('.00','');
     $('quickDifference').textContent =
       difference >= 0
-        ? money(difference) + ' below limit'
+        ? money(difference) + ' above target'
         : money(Math.abs(difference)) + ' over limit';
 
     const decision = $('quickDecision');
