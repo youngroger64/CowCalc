@@ -292,3 +292,106 @@ select:focus,
   }
 }
 
+/* ===== MARTBID THEME TWEAKS ===== */
+
+/* Hero text */
+.hero h1,
+.hero h1 em{
+    color:#D4AF37 !important;
+}
+
+.hero p{
+    color:#F7F5EE !important;
+}
+
+/* Anything sitting directly on the dark green page */
+.page > h2,
+.page > h3,
+.page > p{
+    color:#F7F5EE !important;
+}
+
+/* "Behind the Number" section */
+.page > section h2,
+.page > section > h2,
+.page h2{
+    color:#F7F5EE !important;
+}
+
+.page h3{
+    color:#F7F5EE !important;
+}
+
+.page > p,
+.page section > p{
+    color:#D7DDD8 !important;
+}
+
+/* Increase logo size */
+.brand-logo{
+    height:82px !important;
+    width:auto !important;
+    max-width:none !important;
+}
+
+/* Mobile */
+@media (max-width:700px){
+
+    .brand-logo{
+        height:68px !important;
+    }
+
+}
+
+/* MARTBID DARK SAGE — TEXT AND LOGO FIX */
+
+/* Text directly on the dark green background */
+.planning-intro h2 {
+  color: #d4af37 !important;
+}
+
+.planning-intro p {
+  color: #f7f1d2 !important;
+}
+
+/* Keep text inside white cards dark navy */
+.quick-entry h2,
+.quick-entry h3,
+.card h2,
+.card h3,
+.card-title h2,
+.card-title p,
+.card label,
+.card label > span,
+.tab-panel h2,
+.tab-panel h3 {
+  color: #0f2233 !important;
+}
+
+.card-title p,
+.quick-entry p {
+  color: #66736f !important;
+}
+
+/* Enlarge logo and give the header enough room */
+.topbar-inner {
+  height: 92px !important;
+}
+
+.brand-logo {
+  height: 76px !important;
+  width: auto !important;
+  max-width: 390px !important;
+  object-fit: contain !important;
+}
+
+@media (max-width: 700px) {
+  .topbar-inner {
+    height: 88px !important;
+  }
+
+  .brand-logo {
+    height: 68px !important;
+    max-width: 310px !important;
+  }
+}
