@@ -222,21 +222,21 @@
     signedClass($('rMarginDay'), marginDay);
 
     const badge = $('decisionBadge');
-    badge.className = 'decision';
+    if (badge) badge.className = 'decision';
     if (!bidKg) {
-      badge.textContent = 'Enter a mart price';
-      badge.classList.add('decision-neutral');
+      if (badge) badge.textContent = 'Enter a mart price';
+      if (badge) badge.classList.add('decision-neutral');
     } else {
       const difference = maxBid - bidKg;
       if (difference >= .10) {
-        badge.textContent = 'Within buying range';
-        badge.classList.add('decision-buy');
+        if (badge) badge.textContent = 'Within buying range';
+        if (badge) badge.classList.add('decision-buy');
       } else if (difference >= 0) {
-        badge.textContent = 'Close to your limit';
-        badge.classList.add('decision-caution');
+        if (badge) badge.textContent = 'Close to your limit';
+        if (badge) badge.classList.add('decision-caution');
       } else {
-        badge.textContent = 'Above maximum bid';
-        badge.classList.add('decision-stop');
+        if (badge) badge.textContent = 'Above maximum bid';
+        if (badge) badge.classList.add('decision-stop');
       }
     }
   }
