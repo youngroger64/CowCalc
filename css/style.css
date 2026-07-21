@@ -87,3 +87,208 @@ button,input{font:inherit}.shell{width:min(1120px,calc(100% - 32px));margin-inli
     max-width: 235px;
   }
 }
+
+
+/* MARTBID DARK SAGE THEME V1 */
+:root {
+  --mb-sage-dark: #0f3b2e;
+  --mb-sage-deep: #0a2f25;
+  --mb-sage-mid: #1b4f3f;
+  --mb-cream: #f7f5ee;
+  --mb-card: #ffffff;
+  --mb-navy: #0f2233;
+  --mb-muted: #66736f;
+  --mb-border: #d5ded8;
+  --mb-gold: #d4af37;
+}
+
+/* Overall application background */
+html,
+body {
+  background: var(--mb-sage-dark) !important;
+}
+
+/* Header */
+.topbar {
+  background: var(--mb-sage-deep) !important;
+  border-bottom-color: rgba(212, 175, 55, .22) !important;
+}
+
+/* Keep the logo image untouched */
+.brand-logo {
+  filter: none !important;
+}
+
+/* Header actions */
+.header-actions button {
+  background: transparent !important;
+  color: var(--mb-gold) !important;
+  border-color: rgba(212, 175, 55, .85) !important;
+}
+
+.header-actions button:hover {
+  background: var(--mb-gold) !important;
+  color: var(--mb-sage-deep) !important;
+}
+
+/* Main page shell */
+.shell,
+.page {
+  background: var(--mb-sage-dark) !important;
+}
+
+/* Hero area */
+.hero {
+  background: var(--mb-sage-dark) !important;
+}
+
+.hero h1,
+.hero h1 em {
+  color: var(--mb-gold) !important;
+}
+
+.hero p {
+  color: #f1e4b2 !important;
+}
+
+/* Price-status card in hero */
+.price-status {
+  background: rgba(10, 47, 37, .88) !important;
+  color: var(--mb-gold) !important;
+  border-color: rgba(212, 175, 55, .65) !important;
+}
+
+.price-status strong,
+.price-status p {
+  color: var(--mb-gold) !important;
+}
+
+/* White cards */
+.card,
+.quick-entry,
+.step-card,
+.tab-panel {
+  background: var(--mb-card) !important;
+  color: var(--mb-navy) !important;
+  border-color: var(--mb-border) !important;
+  box-shadow: 0 16px 38px rgba(0, 20, 16, .18) !important;
+}
+
+/* Navy typography inside cards */
+.card h1,
+.card h2,
+.card h3,
+.card h4,
+.card label,
+.card strong,
+.card span,
+.quick-entry h2,
+.quick-entry label,
+.quick-entry strong,
+.quick-entry span,
+.step-card h2,
+.step-card h3,
+.step-card label,
+.step-card strong,
+.tab-panel h2,
+.tab-panel h3,
+.tab-panel label,
+.tab-panel strong {
+  color: var(--mb-navy);
+}
+
+/* Supporting text */
+.card p,
+.card small,
+.quick-entry p,
+.step-card p,
+.tab-panel p {
+  color: var(--mb-muted);
+}
+
+/* Inputs */
+input,
+select,
+.input-unit {
+  background: #ffffff !important;
+  color: var(--mb-navy) !important;
+  border-color: #c9d4ce !important;
+}
+
+input:focus,
+select:focus,
+.input-unit:focus-within {
+  border-color: var(--mb-gold) !important;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, .17) !important;
+}
+
+/* Active controls */
+.day-buttons button.is-active {
+  background: var(--mb-sage-deep) !important;
+  color: #ffffff !important;
+  border-color: var(--mb-sage-deep) !important;
+}
+
+.profit-slider {
+  accent-color: var(--mb-sage-mid);
+}
+
+/* Tabs */
+.tabs {
+  background: #e8ede9 !important;
+}
+
+.tab {
+  color: #5e6b66 !important;
+}
+
+.tab.is-active {
+  background: #ffffff !important;
+  color: var(--mb-navy) !important;
+}
+
+/* Result values */
+.quick-result strong,
+.result-value {
+  color: var(--mb-navy);
+}
+
+.quick-profit strong,
+.positive {
+  color: var(--mb-gold) !important;
+}
+
+/* Decision states */
+.quick-decision.buy {
+  background: #dcefd8 !important;
+  color: var(--mb-sage-deep) !important;
+}
+
+.quick-decision.caution {
+  background: #fff0c6 !important;
+  color: #8c6200 !important;
+}
+
+.quick-decision.stop {
+  background: #f4d6cf !important;
+  color: #8c2e25 !important;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  html,
+  body,
+  .shell,
+  .page,
+  .hero {
+    background: var(--mb-sage-dark) !important;
+  }
+
+  .card,
+  .quick-entry,
+  .step-card,
+  .tab-panel {
+    border-radius: 20px !important;
+  }
+}
+
