@@ -459,3 +459,17 @@ select:focus,
     color: #D4AF37 !important;
 }
 
+cd ~/cowcalc
+
+cat >> css/style.css <<'CSS'
+
+/* Final Quick Bid heading fix */
+.quick-entry .quick-head h2 {
+  color: #0f2233 !important;
+}
+
+.quick-entry .quick-head p {
+  color: #66736f !important;
+}
+CSS
+
