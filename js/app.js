@@ -3,8 +3,15 @@
   const inputs = [...document.querySelectorAll('input, select')];
   const money = n => new Intl.NumberFormat('en-IE',{style:'currency',currency:'EUR',minimumFractionDigits:2}).format(Number.isFinite(n)?n:0);
   const num = (id) => Number($(id).value) || 0;
-  const set = (id, text) => { $(id).textContent = text; };
-  const signedClass = (el, n) => { el.classList.toggle('positive', n >= 0); el.classList.toggle('negative', n < 0); };
+  const set = (id, text) => {
+    const el = $(id);
+    if (el) el.textContent = text;
+  };
+  const signedClass = (el, n) => {
+  if (!el) return;
+  el.classList.toggle('positive', n >= 0);
+  el.classList.toggle('negative', n < 0);
+};
 
   let officialPrices = null;
   const categoryNames = {steer:'Steer',heifer:'Heifer',cow:'Cow',youngBull:'Young bull',bull:'Bull'};
@@ -70,9 +77,6 @@
     $('marginPerDay').value = quickDays > 0 ? (targetProfit / quickDays).toFixed(4) : 0;
 
     calculate();
-
-    const maxText = $('maxPurchaseHero').textContent || '';
-    const bidText = $('maxBidHero').textContent || '';
 
     // Read the underlying values directly from the same model.
     const liveGain = (Number($('dailyGain').value) || 0) * quickDays;
@@ -201,12 +205,6 @@
     set('finishingCosts', money(finishing));
     set('targetMargin', money(targetMargin));
 
-    set('maxBidHero', money(maxBid) + '/kg');
-    set('maxPurchaseHero', 'Maximum purchase price ' + money(maxPurchase));
-    set('factoryReturnHero', money(netFactory));
-    set('targetMarginHero', money(targetMargin));
-    set('actualMarginHero', money(actualMargin));
-
     set('rPurchaseWeight', weight.toFixed(0) + ' kg');
     set('rPurchasePrice', money(purchase));
     set('rLiveGain', liveGain.toFixed(1) + ' kg');
@@ -220,7 +218,6 @@
     set('rBreakEven', money(breakEven) + '/kg');
     set('rMaxBid', money(maxBid) + '/kg');
 
-    signedClass($('actualMarginHero'), actualMargin);
     signedClass($('rMargin'), actualMargin);
     signedClass($('rMarginDay'), marginDay);
 
