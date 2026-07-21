@@ -116,10 +116,20 @@
     $('quickMaxKg').textContent = money(maxKg) + '/kg liveweight';
     $('quickProfit').textContent = money(actualProfit);
     $('quickProfitLabel').textContent = money(targetProfit).replace('.00','');
-    $('quickDifference').textContent =
-      difference >= 0
-        ? money(difference) + ' above target'
-        : money(Math.abs(difference)) + ' over limit';
+    const profitGap = actualProfit - targetProfit;
+    const tolerance = 0.01;
+
+    if (targetProfit <= tolerance) {
+      $('quickDifference').textContent = 'Estimated profit';
+    } else if (Math.abs(profitGap) <= tolerance) {
+      $('quickDifference').textContent = 'Target profit achieved';
+    } else if (profitGap > 0) {
+      $('quickDifference').textContent =
+        money(profitGap) + ' above target';
+    } else {
+      $('quickDifference').textContent =
+        money(Math.abs(profitGap)) + ' below target';
+    }
 
     const decision = $('quickDecision');
     decision.className = 'quick-decision';
@@ -132,10 +142,12 @@
       decision.textContent = 'Bid';
       decision.classList.add('buy');
       $('quickStatus').textContent = 'Good margin';
-    } else if (difference >= 0) {
-      decision.textContent = 'Caution';
+    } else if (difference >= -0.01) {
+      decision.textContent =
+        Math.abs(difference) <= 0.01 ? 'At limit' : 'Caution';
       decision.classList.add('caution');
-      $('quickStatus').textContent = 'Near limit';
+      $('quickStatus').textContent =
+        Math.abs(difference) <= 0.01 ? 'Target met' : 'Near limit';
     } else {
       decision.textContent = 'Stop';
       decision.classList.add('stop');
