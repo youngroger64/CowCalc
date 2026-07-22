@@ -455,4 +455,58 @@
     });
   }
 
+
+  // MARTBID EXPECTED FACTORY PRICE PERSISTENCE
+  const expectedPriceStorageKey = 'martbidExpectedFactoryPrice';
+  const expectedPriceInput = $('basePrice');
+
+  function applyExpectedFactoryPrice(value) {
+    const price = Number(value);
+
+    if (!Number.isFinite(price) || price <= 0) return;
+
+    expectedPriceInput.value = price.toFixed(2);
+
+    if ($('quickFactoryPrice')) {
+      $('quickFactoryPrice').value = price.toFixed(2);
+    }
+
+    set('quickFactoryPriceDisplay', price.toFixed(2));
+
+    localStorage.setItem(
+      expectedPriceStorageKey,
+      price.toFixed(2)
+    );
+  }
+
+  if (expectedPriceInput) {
+    const savedExpectedPrice =
+      localStorage.getItem(expectedPriceStorageKey);
+
+    if (
+      savedExpectedPrice !== null &&
+      Number(savedExpectedPrice) > 0
+    ) {
+      applyExpectedFactoryPrice(savedExpectedPrice);
+    }
+
+    expectedPriceInput.addEventListener('input', () => {
+      const price = Number(expectedPriceInput.value);
+
+      if (!Number.isFinite(price) || price <= 0) return;
+
+      applyExpectedFactoryPrice(price);
+      calculateQuick();
+    });
+
+    expectedPriceInput.addEventListener('change', () => {
+      const price = Number(expectedPriceInput.value);
+
+      if (!Number.isFinite(price) || price <= 0) return;
+
+      applyExpectedFactoryPrice(price);
+      calculateQuick();
+    });
+  }
+
 })();
