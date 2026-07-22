@@ -456,27 +456,39 @@
   }
 
 
-  // MARTBID EXPECTED FACTORY PRICE PERSISTENCE
+  // MARTBID EXPECTED FACTORY PRICE ENTRY
   const expectedPriceStorageKey = 'martbidExpectedFactoryPrice';
   const expectedPriceInput = $('basePrice');
 
-  function applyExpectedFactoryPrice(value) {
-    const price = Number(value);
+  function commitExpectedFactoryPrice(rawValue) {
+    const normalised = String(rawValue).trim().replace(',', '.');
+    const price = Number(normalised);
 
-    if (!Number.isFinite(price) || price <= 0) return;
-
-    expectedPriceInput.value = price.toFixed(2);
-
-    if ($('quickFactoryPrice')) {
-      $('quickFactoryPrice').value = price.toFixed(2);
+    if (!Number.isFinite(price) || price <= 0) {
+      return false;
     }
 
-    set('quickFactoryPriceDisplay', price.toFixed(2));
+    const formatted = price.toFixed(2);
+
+    factoryPriceMode = 'manual';
+    manualFactoryPrice = price;
+    expectedPriceInput.value = formatted;
+
+    if ($('quickFactoryPrice')) {
+      $('quickFactoryPrice').value = formatted;
+    }
+
+    set('quickFactoryPriceDisplay', formatted);
 
     localStorage.setItem(
       expectedPriceStorageKey,
-      price.toFixed(2)
+      formatted
     );
+
+    updateFactoryPriceModeUI();
+    calculateQuick();
+
+    return true;
   }
 
   if (expectedPriceInput) {
@@ -487,91 +499,41 @@
       savedExpectedPrice !== null &&
       Number(savedExpectedPrice) > 0
     ) {
-      applyExpectedFactoryPrice(savedExpectedPrice);
+      expectedPriceInput.value =
+        Number(savedExpectedPrice).toFixed(2);
     }
 
-    expectedPriceInput.addEventListener('input', () => {
-      const price = Number(expectedPriceInput.value);
+    let previousExpectedPrice =
+      expectedPriceInput.value;
 
-      if (!Number.isFinite(price) || price <= 0) return;
+    expectedPriceInput.addEventListener('focus', () => {
+      previousExpectedPrice =
+        expectedPriceInput.value;
 
-      applyExpectedFactoryPrice(price);
-      calculateQuick();
+      // Clear once so the new number can be typed normally.
+      expectedPriceInput.value = '';
     });
 
-    expectedPriceInput.addEventListener('change', () => {
-      const price = Number(expectedPriceInput.value);
-
-      if (!Number.isFinite(price) || price <= 0) return;
-
-      applyExpectedFactoryPrice(price);
-      calculateQuick();
-    });
-  }
-
-
-  // EXPECTED FACTORY PRICE MOBILE ENTRY
-  const expectedPriceField = $('basePrice');
-
-  if (expectedPriceField) {
-    let previousExpectedPrice = expectedPriceField.value;
-    let clearedForEditing = false;
-
-    expectedPriceField.addEventListener('focus', () => {
-      previousExpectedPrice = expectedPriceField.value;
-
-      if (!clearedForEditing) {
-        expectedPriceField.value = '';
-        clearedForEditing = true;
-      }
-    });
-
-    expectedPriceField.addEventListener('input', () => {
-      const value = Number(
-        String(expectedPriceField.value).replace(',', '.')
-      );
-
-      if (!Number.isFinite(value) || value <= 0) return;
-
-      factoryPriceMode = 'manual';
-      manualFactoryPrice = value;
-
-      if ($('quickFactoryPrice')) {
-        $('quickFactoryPrice').value = value.toFixed(2);
-      }
-
-      set('quickFactoryPriceDisplay', value.toFixed(2));
-      updateFactoryPriceModeUI();
-      calculateQuick();
-    });
-
-    expectedPriceField.addEventListener('keydown', event => {
+    expectedPriceInput.addEventListener('keydown', event => {
       if (event.key !== 'Enter') return;
 
       event.preventDefault();
-      expectedPriceField.blur();
+      expectedPriceInput.blur();
     });
 
-    expectedPriceField.addEventListener('blur', () => {
-      const value = Number(
-        String(expectedPriceField.value).replace(',', '.')
-      );
+    expectedPriceInput.addEventListener('blur', () => {
+      if (
+        !commitExpectedFactoryPrice(
+          expectedPriceInput.value
+        )
+      ) {
+        expectedPriceInput.value =
+          previousExpectedPrice;
 
-      if (!Number.isFinite(value) || value <= 0) {
-        expectedPriceField.value = previousExpectedPrice;
-      } else {
-        expectedPriceField.value = value.toFixed(2);
-        manualFactoryPrice = value;
-
-        if ($('quickFactoryPrice')) {
-          $('quickFactoryPrice').value = value.toFixed(2);
-        }
-
-        set('quickFactoryPriceDisplay', value.toFixed(2));
-        calculateQuick();
+        commitExpectedFactoryPrice(
+          previousExpectedPrice
+        );
       }
-
-      clearedForEditing = false;
     });
   }
 
