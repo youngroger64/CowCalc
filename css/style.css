@@ -991,3 +991,55 @@ CSS
   }
 }
 
+
+/* GUIDED UI GOLD SECTION HEADINGS */
+
+/* Make the two main section headings stand out */
+.guided-section h2,
+.pre-mart-section h2,
+.mart-mode-section h2,
+#preMartTitle,
+#martModeTitle {
+  color: #d4af37 !important;
+  -webkit-text-fill-color: #d4af37 !important;
+}
+
+/* Keep ordinary labels and values inside the white card navy */
+.guided-section label,
+.guided-section p,
+.guided-section .field-label,
+.pre-mart-section label,
+.mart-mode-section label {
+  color: #0f2233 !important;
+  -webkit-text-fill-color: #0f2233 !important;
+}
+
+/* Decision banner text */
+.decision-banner,
+.decision-banner *,
+.guided-decision,
+.guided-decision *,
+.quick-decision,
+.quick-decision * {
+  color: #d4af37 !important;
+  -webkit-text-fill-color: #d4af37 !important;
+}
+
+/* Ensure BID / NEAR LIMIT / STOP headings are clearly visible */
+.decision-banner h2,
+.decision-banner h3,
+.guided-decision h2,
+.guided-decision h3,
+.quick-decision {
+  color: #d4af37 !important;
+  -webkit-text-fill-color: #d4af37 !important;
+  opacity: 1 !important;
+}
+
+/* Supporting sentence in the decision banner */
+.decision-banner p,
+.guided-decision p {
+  color: #f7f1d2 !important;
+  -webkit-text-fill-color: #f7f1d2 !important;
+}
+
