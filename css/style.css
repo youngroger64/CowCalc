@@ -1548,3 +1548,34 @@ CSS
   line-height: 1.2;
 }
 
+
+/* DISPLAY-ONLY PRE-MART FACTORY PRICE */
+.factory-price-display {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  white-space: nowrap;
+  color: #0f2233 !important;
+}
+
+.factory-price-display b,
+.factory-price-display span,
+.factory-price-display small {
+  color: #0f2233 !important;
+  -webkit-text-fill-color: #0f2233 !important;
+}
+
+.factory-price-display span {
+  min-width: 70px;
+  font-size: 1.55rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.factory-price-display small {
+  font-size: 1rem;
+  color: #66736f !important;
+  -webkit-text-fill-color: #66736f !important;
+}
+

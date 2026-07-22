@@ -96,19 +96,12 @@
             </button>
           </div>
 
-          <strong class="factory-price-input">
+          <strong class="factory-price-display">
             <b>€</b>
-            <input
-              id="quickFactoryPrice"
-              type="number"
-              min="0"
-              step="0.01"
-              inputmode="decimal"
-              readonly
-              aria-label="Factory price used"
-            >
+            <span id="quickFactoryPriceDisplay">0.00</span>
             <small>/kg</small>
           </strong>
+          <input id="quickFactoryPrice" type="hidden" value="0">
         </div>
 
         <div class="pre-mart-controls">

@@ -175,8 +175,19 @@
       ((Number($('overheadDay').value)||0) * quickDays) +
       (feedDay * quickDays);
 
+    const selectedFactoryPrice =
+      Number($('basePrice').value) || 0;
+
+    $('quickFactoryPrice').value =
+      selectedFactoryPrice.toFixed(2);
+
+    set(
+      'quickFactoryPriceDisplay',
+      selectedFactoryPrice.toFixed(2)
+    );
+
     const paidPrice =
-      (Number($('quickFactoryPrice').value)||0) +
+      selectedFactoryPrice +
       (Number($('breedBonus').value)||0) +
       (Number($('qpsBonus').value)||0);
 
@@ -353,8 +364,6 @@
       }
 
       updateFactoryPriceModeUI();
-      quickFactoryPriceInput.focus();
-      quickFactoryPriceInput.select();
       calculateQuick();
     });
   }
