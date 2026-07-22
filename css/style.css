@@ -1043,3 +1043,15 @@ CSS
   -webkit-text-fill-color: #f7f1d2 !important;
 }
 
+
+/* Exact guided section heading colours */
+.guided-step-head h3 {
+  color: #d4af37 !important;
+  -webkit-text-fill-color: #d4af37 !important;
+}
+
+/* Keep the explanatory text beneath them muted */
+.guided-step-head p {
+  color: #66736f !important;
+  -webkit-text-fill-color: #66736f !important;
+}
