@@ -855,3 +855,64 @@ CSS
   .guided-results > div + div { border-top: 1px solid #d5ded8; border-left: 0; }
   .guided-results strong { font-size: 46px; }
 }
+
+
+/* MARTBID COMPACT PRE-MART / MART MODE PROTOTYPE */
+.compact-guided { padding: 22px 26px 26px !important; }
+.compact-price-strip {
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
+  padding:14px 18px; margin:-2px 0 18px; border:1px solid #d5ded8;
+  border-radius:16px; background:#eef4ed;
+}
+.compact-price-strip > div { display:flex; flex-direction:column; gap:2px; }
+.compact-price-strip span { font-weight:800; color:#0f2233 !important; }
+.compact-price-strip small { color:#66736f !important; }
+.compact-price-strip strong { display:flex; align-items:center; gap:8px; font-size:24px; color:#0f2233 !important; }
+.compact-price-strip input { width:72px; border:0 !important; padding:0 !important; font:inherit; background:transparent !important; }
+.compact-header { margin-bottom:12px !important; }
+.compact-header h2 { margin:0; }
+.compact-section { padding:16px 0 4px !important; }
+.compact-title { margin-bottom:14px !important; }
+.compact-title p { margin-top:2px !important; }
+.compact-plan-grid { display:grid; grid-template-columns:1fr 1.35fr 1.35fr; gap:16px; align-items:end; }
+.compact-control, .compact-slider-control, .compact-bid-control { display:flex; flex-direction:column; gap:8px; }
+.compact-control > span, .compact-control-head > span { font-weight:800; color:#0f2233 !important; }
+.compact-control select { height:48px; }
+.compact-control-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.compact-control-head strong { font-size:22px; color:#d4af37 !important; }
+.compact-number-input { display:flex; align-items:center; gap:6px; border:1px solid #c9d4ce; border-radius:12px; padding:7px 10px; background:#fff; }
+.compact-number-input input { width:78px; border:0 !important; padding:0 !important; font-size:22px; font-weight:800; text-align:right; }
+.compact-number-input b { color:#0f2233 !important; }
+.mart-mode-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.compact-bid-input { height:54px; margin:0; }
+.compact-bid-stepper { display:grid !important; grid-template-columns:repeat(4, 1fr); gap:8px !important; }
+.compact-bid-stepper button { min-width:0 !important; height:46px !important; padding:0 8px !important; }
+.mart-decision-row { display:grid; grid-template-columns:1fr 1.2fr 1fr; margin-top:18px; border:1px solid #d5ded8; border-radius:18px; overflow:hidden; background:#f8faf8; }
+.decision-number { min-width:0; padding:16px 14px; text-align:center; display:flex; flex-direction:column; justify-content:center; }
+.decision-number + .decision-number { border-left:1px solid #d5ded8; }
+.decision-number span { font-size:12px; text-transform:uppercase; letter-spacing:.08em; font-weight:800; color:#52605c !important; }
+.decision-number strong { margin-top:5px; font-size:32px; line-height:1.05; color:#0f2233 !important; }
+.decision-number small { margin-top:5px; color:#66736f !important; }
+.room-number strong { color:#18823e !important; }
+.compact-decision { margin-top:12px !important; padding:16px 18px !important; }
+
+@media (max-width: 700px) {
+  .compact-guided { padding:16px 14px 20px !important; }
+  .compact-price-strip { padding:11px 13px; margin-bottom:12px; }
+  .compact-price-strip strong { font-size:20px; }
+  .compact-header { margin-bottom:4px !important; }
+  .compact-plan-grid { grid-template-columns:1fr; gap:12px; }
+  .compact-section { padding-top:12px !important; }
+  .compact-title { margin-bottom:10px !important; }
+  .compact-title p { display:none; }
+  .mart-mode-grid { grid-template-columns:1fr; gap:14px; }
+  .compact-bid-stepper { grid-template-columns:repeat(4, 1fr) !important; }
+  .compact-bid-stepper button { font-size:18px !important; height:44px !important; }
+  .mart-decision-row { grid-template-columns:1fr 1fr; margin-top:14px; }
+  .current-number { grid-column:1 / -1; flex-direction:row; align-items:center; justify-content:space-between; text-align:left; padding:11px 14px; border-bottom:1px solid #d5ded8; }
+  .current-number strong { font-size:28px; margin:0; }
+  .max-number { border-left:0 !important; }
+  .decision-number { padding:14px 10px; }
+  .decision-number strong { font-size:28px; }
+  .compact-decision { margin-top:10px !important; }
+}

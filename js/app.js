@@ -72,7 +72,7 @@
 
     slider.min = range.min;
     slider.max = range.max;
-    slider.step = 5;
+    slider.step = 1;
     set('quickWeightMin', `${range.min} kg`);
     set('quickWeightMax', `${range.max} kg`);
 
@@ -80,7 +80,7 @@
     if (resetToDefault || !Number.isFinite(value)) value = range.defaultValue;
     value = Math.min(range.max, Math.max(range.min, value));
     input.value = Math.round(value);
-    slider.value = Math.round(value / 5) * 5;
+    slider.value = Math.round(value);
   }
 
   function syncQuickCategory() {
@@ -107,6 +107,7 @@
     set('quickDaysLabel', `${quickDays} days`);
     set('quickProfitLabel', money(targetProfit).replace('.00',''));
     set('quickBidDisplay', money(currentBid).replace('.00',''));
+    set('quickCurrentSummary', money(currentBid).replace('.00',''));
 
     $('purchaseWeight').value = weight;
     $('martPriceKg').value = weight > 0 ? (currentBid / weight).toFixed(4) : 0;
