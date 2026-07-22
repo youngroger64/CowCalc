@@ -1259,3 +1259,152 @@ CSS
     font-size: 22px;
   }
 }
+/* Desktop Mart Mode layout */
+@media (min-width: 900px) {
+  .mart-mode-section,
+  .mart-mode {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr);
+    column-gap: 32px;
+    align-items: start;
+  }
+
+  /* Heading spans the full width */
+  .mart-mode-section > h2,
+  .mart-mode-section > h3,
+  .mart-mode > h2,
+  .mart-mode > h3 {
+    grid-column: 1 / -1;
+  }
+
+  /* Input area stays on the left */
+  .mart-mode-fields,
+  .mart-inputs,
+  .mart-controls {
+    grid-column: 1;
+  }
+
+  /* Maximum bid card moves to the right */
+  .maximum-bid-card,
+  .max-bid-card,
+  .guided-max-bid {
+    grid-column: 2;
+    grid-row: 2;
+    position: sticky;
+    top: 110px;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .maximum-bid-card strong,
+  .max-bid-card strong,
+  .guided-max-bid strong {
+    font-size: clamp(4rem, 6vw, 6.5rem);
+    line-height: 1;
+  }
+
+  .guided-bid.card {
+    max-width: 1180px;
+    margin-inline: auto;
+  }
+}
+
+
+/* MARTBID DESKTOP MART-FIRST LAYOUT */
+@media (min-width: 980px) {
+
+  .guided-bid.mart-first {
+    max-width: 1180px;
+    margin-inline: auto;
+  }
+
+  /*
+   * Mart Mode:
+   * controls on the left,
+   * maximum bid on the right.
+   */
+  .mart-first-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr);
+    grid-template-areas:
+      "heading result"
+      "controls result";
+    column-gap: 42px;
+    row-gap: 20px;
+    align-items: stretch;
+  }
+
+  .mart-first-heading {
+    grid-area: heading;
+    align-self: end;
+  }
+
+  .mart-first-heading p {
+    margin-bottom: 0;
+  }
+
+  .mart-first-grid {
+    grid-area: controls;
+    display: grid;
+    grid-template-columns: minmax(220px, .8fr) minmax(340px, 1.2fr);
+    gap: 28px;
+    align-items: end;
+    margin: 0;
+  }
+
+  .mart-max-result {
+    grid-area: result;
+    margin: 0;
+    min-height: 300px;
+    padding: 38px 34px;
+    border-radius: 24px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+  }
+
+  .mart-max-result > span {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .mart-max-result > strong {
+    display: block;
+    margin: 18px 0 12px;
+    font-size: clamp(64px, 5.5vw, 88px);
+    line-height: .95;
+  }
+
+  .mart-max-result > small {
+    font-size: 21px;
+  }
+
+  /*
+   * Pre-Mart Setup remains below Mart Mode
+   * and uses the available desktop width.
+   */
+  .pre-mart-section {
+    margin-top: 30px;
+    padding-top: 28px;
+    border-top: 1px solid #d5ded8;
+  }
+
+  .pre-mart-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+  }
+
+  .pre-mart-price-row {
+    margin-bottom: 26px;
+  }
+}
+
