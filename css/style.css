@@ -1433,3 +1433,88 @@ CSS
 }
 
 }
+
+
+/* FACTORY PRICE SOURCE SELECTOR */
+.factory-price-selector {
+  display: grid !important;
+  grid-template-columns: minmax(180px, 1fr) auto auto !important;
+  gap: 14px 22px !important;
+  align-items: center !important;
+}
+
+.factory-price-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.factory-price-mode {
+  display: flex;
+  padding: 4px;
+  gap: 4px;
+  border-radius: 12px;
+  background: #e7ede8;
+}
+
+.factory-price-mode button {
+  min-height: 38px;
+  padding: 8px 13px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #52615b;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.factory-price-mode button.is-active {
+  background: #ffffff;
+  color: #0f2233;
+  box-shadow: 0 2px 8px rgba(15, 34, 51, .10);
+}
+
+.factory-price-input {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.factory-price-input input {
+  width: 76px !important;
+  border: 0 !important;
+  padding: 3px !important;
+  background: transparent !important;
+  font: inherit;
+  font-weight: 800;
+  text-align: center;
+}
+
+.factory-price-input input:not([readonly]) {
+  border-bottom: 2px solid #d4af37 !important;
+  background: #ffffff !important;
+}
+
+@media (max-width: 760px) {
+  .factory-price-selector {
+    grid-template-columns: 1fr auto !important;
+  }
+
+  .factory-price-mode {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .factory-price-mode button {
+    flex: 1;
+  }
+
+  .factory-price-input {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+

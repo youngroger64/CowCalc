@@ -14,6 +14,8 @@
 };
 
   let officialPrices = null;
+  let factoryPriceMode = 'official';
+  let officialPriceLabel = 'DAFM price feed';
   const categoryNames = {steer:'Steer',heifer:'Heifer',cow:'Cow',youngBull:'Young bull',bull:'Bull'};
   const weightRanges = {
     steer: {min: 350, max: 700, defaultValue: 450},
@@ -23,14 +25,60 @@
     bull: {min: 500, max: 1000, defaultValue: 700}
   };
 
+  function updateFactoryPriceModeUI() {
+    const officialButton = $('useOfficialPrice');
+    const manualButton = $('useManualPrice');
+    const quickPrice = $('quickFactoryPrice');
+
+    if (officialButton) {
+      officialButton.classList.toggle(
+        'is-active',
+        factoryPriceMode === 'official'
+      );
+    }
+
+    if (manualButton) {
+      manualButton.classList.toggle(
+        'is-active',
+        factoryPriceMode === 'manual'
+      );
+    }
+
+    if (quickPrice) {
+      quickPrice.readOnly = factoryPriceMode === 'official';
+    }
+
+    if ($('inlinePriceSource')) {
+      $('inlinePriceSource').textContent =
+        factoryPriceMode === 'official'
+          ? officialPriceLabel
+          : 'Using your expected factory price';
+    }
+  }
+
   function applySuggestedPrice(useIt = false) {
     if (!officialPrices) return;
+
     const category = $('animalCategory').value;
     const value = Number(officialPrices.prices?.[category]);
+
     if (!Number.isFinite(value)) return;
+
     $('suggestedPrice').value = value.toFixed(2);
-    if (useIt) $('basePrice').value = value.toFixed(2);
-    if ($('quickFactoryPrice')) $('quickFactoryPrice').value = value.toFixed(2);
+
+    if (useIt) {
+      factoryPriceMode = 'official';
+    }
+
+    if (factoryPriceMode === 'official') {
+      $('basePrice').value = value.toFixed(2);
+
+      if ($('quickFactoryPrice')) {
+        $('quickFactoryPrice').value = value.toFixed(2);
+      }
+    }
+
+    updateFactoryPriceModeUI();
     calculate();
   }
 
@@ -46,12 +94,16 @@
       $('priceStatusTitle').textContent = isLive ? 'Official cattle prices available' : 'Suggested demo prices loaded';
       const week = officialPrices.weekEnding ? `Week ending ${officialPrices.weekEnding}` : 'No verified update has run yet';
       $('priceStatusText').textContent = `${week}. Your expected price remains editable.`;
-      $('inlinePriceSource').textContent = `${officialPrices.source || 'Price source'} · ${week}`;
+      officialPriceLabel =
+        `${officialPrices.source || 'Price source'} · ${week}`;
+      updateFactoryPriceModeUI();
     } catch (error) {
       dot.classList.add('fail');
       $('priceStatusTitle').textContent = 'Automatic price unavailable';
       $('priceStatusText').textContent = 'Continue using your own expected factory price.';
-      $('inlinePriceSource').textContent = 'Manual price mode';
+      officialPriceLabel = 'Automatic price unavailable';
+      factoryPriceMode = 'manual';
+      updateFactoryPriceModeUI();
       $('suggestedPrice').value = '';
     }
   }
@@ -89,13 +141,7 @@
     updateQuickCategoryLabel();
     applySuggestedPrice(false);
 
-    if (officialPrices) {
-      const value = Number(officialPrices.prices?.[category]);
-      if (Number.isFinite(value)) {
-        $('quickFactoryPrice').value = value.toFixed(2);
-        $('basePrice').value = value.toFixed(2);
-      }
-    }
+
   }
 
   function calculateQuick() {
@@ -279,6 +325,61 @@
     tab.classList.add('is-active');
     $(tab.dataset.tab).classList.add('is-active');
   }));
+
+  const officialPriceButton = $('useOfficialPrice');
+  const manualPriceButton = $('useManualPrice');
+  const quickFactoryPriceInput = $('quickFactoryPrice');
+  const expectedFactoryPriceInput = $('basePrice');
+
+  if (officialPriceButton) {
+    officialPriceButton.addEventListener('click', () => {
+      factoryPriceMode = 'official';
+      applySuggestedPrice(true);
+      calculateQuick();
+    });
+  }
+
+  if (manualPriceButton) {
+    manualPriceButton.addEventListener('click', () => {
+      factoryPriceMode = 'manual';
+
+      const manualValue = Number(expectedFactoryPriceInput?.value);
+
+      if (Number.isFinite(manualValue) && manualValue > 0) {
+        quickFactoryPriceInput.value = manualValue.toFixed(2);
+      }
+
+      updateFactoryPriceModeUI();
+      quickFactoryPriceInput.focus();
+      quickFactoryPriceInput.select();
+      calculateQuick();
+    });
+  }
+
+  if (quickFactoryPriceInput) {
+    quickFactoryPriceInput.addEventListener('input', () => {
+      if (factoryPriceMode !== 'manual') return;
+
+      expectedFactoryPriceInput.value = quickFactoryPriceInput.value;
+      calculateQuick();
+    });
+  }
+
+  if (expectedFactoryPriceInput) {
+    expectedFactoryPriceInput.addEventListener('input', () => {
+      factoryPriceMode = 'manual';
+
+      if (quickFactoryPriceInput) {
+        quickFactoryPriceInput.value =
+          expectedFactoryPriceInput.value;
+      }
+
+      updateFactoryPriceModeUI();
+      calculateQuick();
+    });
+  }
+
+  updateFactoryPriceModeUI();
 
   function toast(message) {
     const t = $('toast');
