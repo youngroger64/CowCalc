@@ -185,7 +185,10 @@
     const maxPurchase = (netFactory - nonInterestFinishing - targetProfit) / (1 + interestFactor);
     const maxKg = weight > 0 ? maxPurchase / weight : 0;
 
-    set('quickMaxPrice', money(maxPurchase));
+    const displayedMaxPurchase =
+      Math.round(maxPurchase / 10) * 10;
+
+    set('quickMaxPrice', money(displayedMaxPurchase));
     set('quickMaxKg', money(maxKg) + '/kg liveweight');
 
     // Keep the detailed worksheet synchronised using the calculated maximum bid.
@@ -408,4 +411,26 @@
 
   loadOfficialPrices().then(() => { syncQuickCategory(); syncWeightRange(false); calculateQuick(); });
   calculate();
+
+  // MARTBID EXACT WEIGHT ENTRY
+  const exactWeightInput = $('quickWeight');
+
+  if (exactWeightInput) {
+    let weightBeforeEditing = exactWeightInput.value;
+
+    exactWeightInput.addEventListener('focus', () => {
+      weightBeforeEditing = exactWeightInput.value;
+      exactWeightInput.value = '';
+    });
+
+    exactWeightInput.addEventListener('blur', () => {
+      if (exactWeightInput.value.trim() === '') {
+        exactWeightInput.value = weightBeforeEditing;
+        exactWeightInput.dispatchEvent(
+          new Event('input', { bubbles: true })
+        );
+      }
+    });
+  }
+
 })();
