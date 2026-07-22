@@ -100,20 +100,15 @@
 
   function calculateQuick() {
     const weight = Number($('quickWeight').value) || 0;
-    const currentBid = Number($('quickCurrentBid').value) || 0;
     const targetProfit = Number($('quickProfitSlider').value) || 0;
     quickDays = Number($('quickDaysSlider').value) || 90;
 
     set('quickDaysLabel', `${quickDays} days`);
     set('quickProfitLabel', money(targetProfit).replace('.00',''));
-    set('quickCurrentSummary', money(currentBid).replace('.00',''));
 
     $('purchaseWeight').value = weight;
-    $('martPriceKg').value = weight > 0 ? (currentBid / weight).toFixed(4) : 0;
     $('daysFed').value = quickDays;
     $('marginPerDay').value = quickDays > 0 ? (targetProfit / quickDays).toFixed(4) : 0;
-
-    calculate();
 
     const liveGain = (Number($('dailyGain').value) || 0) * quickDays;
     const finalWeight = weight + liveGain;
@@ -126,13 +121,11 @@
       [Number($('maizeTonne').value)||0, Number($('maizeKg').value)||0]
     ];
     const feedDay = feeds.reduce((sum,[tonne,kg]) => sum + tonne/1000*kg,0);
-    const interest = currentBid * ((Number($('interestRate').value)||0)/100) / 365 * quickDays;
-    const finishing =
+    const nonInterestFinishing =
       (Number($('transport').value)||0) +
       (Number($('dose').value)||0) +
       (Number($('vet').value)||0) +
       (Number($('losses').value)||0) +
-      interest +
       ((Number($('overheadDay').value)||0) * quickDays) +
       (feedDay * quickDays);
 
@@ -142,43 +135,16 @@
       (Number($('qpsBonus').value)||0);
 
     const netFactory = carcass * paidPrice - (Number($('factoryCharges').value)||0);
-    const maxPurchase = netFactory - finishing - targetProfit;
+    const interestFactor = ((Number($('interestRate').value)||0) / 100) / 365 * quickDays;
+    const maxPurchase = (netFactory - nonInterestFinishing - targetProfit) / (1 + interestFactor);
     const maxKg = weight > 0 ? maxPurchase / weight : 0;
-    const room = maxPurchase - currentBid;
 
     set('quickMaxPrice', money(maxPurchase));
     set('quickMaxKg', money(maxKg) + '/kg liveweight');
-    set('quickRoom', money(Math.abs(room)));
 
-    const decision = $('quickDecision');
-    decision.className = 'guided-decision';
-
-    if (!currentBid) {
-      decision.classList.add('neutral');
-      decision.querySelector('strong').textContent = 'Enter a bid';
-      set('quickDecisionDetail', 'Add the current mart bid to see your position.');
-      set('quickRoomLabel', 'Enter a current bid');
-      set('quickStatus', 'Ready');
-    } else if (room >= 50) {
-      decision.classList.add('buy');
-      decision.querySelector('strong').textContent = 'Bid';
-      set('quickDecisionDetail', `You can bid another ${money(room)} before reaching your limit.`);
-      set('quickRoomLabel', 'left to bid');
-      set('quickStatus', 'Good margin');
-    } else if (room >= -0.01) {
-      decision.classList.add('caution');
-      const atLimit = Math.abs(room) <= 0.01;
-      decision.querySelector('strong').textContent = atLimit ? 'At limit' : 'Near limit';
-      set('quickDecisionDetail', atLimit ? 'Your current bid exactly meets your target.' : `Only ${money(room)} remains before your limit.`);
-      set('quickRoomLabel', atLimit ? 'target met' : 'left to bid');
-      set('quickStatus', atLimit ? 'Target met' : 'Near limit');
-    } else {
-      decision.classList.add('stop');
-      decision.querySelector('strong').textContent = 'Stop';
-      set('quickDecisionDetail', `The current bid is ${money(Math.abs(room))} above your maximum.`);
-      set('quickRoomLabel', 'over your limit');
-      set('quickStatus', 'Over limit');
-    }
+    // Keep the detailed worksheet synchronised using the calculated maximum bid.
+    $('martPriceKg').value = weight > 0 ? (maxPurchase / weight).toFixed(4) : 0;
+    calculate();
   }
 
   function calculate() {
@@ -285,7 +251,7 @@
   });
 
 
-  ['quickCurrentBid','quickProfitSlider','quickDaysSlider'].forEach(id => {
+  ['quickProfitSlider','quickDaysSlider'].forEach(id => {
     $(id).addEventListener('input', calculateQuick);
   });
 
@@ -306,14 +272,6 @@
     calculateQuick();
   });
 
-  document.querySelectorAll('[data-bid-delta]').forEach(button => {
-    button.addEventListener('click', () => {
-      const input = $('quickCurrentBid');
-      input.value = Math.max(0, (Number(input.value) || 0) + Number(button.dataset.bidDelta));
-      input.blur();
-      calculateQuick();
-    });
-  });
 
   document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('is-active'));

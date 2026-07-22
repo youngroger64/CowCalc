@@ -992,137 +992,270 @@ CSS
 }
 
 
-/* GUIDED UI GOLD SECTION HEADINGS */
+/* MARTBID GUIDED UI FINAL POLISH V4 */
 
-/* Make the two main section headings stand out */
-.guided-section h2,
-.pre-mart-section h2,
-.mart-mode-section h2,
-#preMartTitle,
-#martModeTitle {
-  color: #d4af37 !important;
-  -webkit-text-fill-color: #d4af37 !important;
+/* Compact official price strip */
+.compact-price-strip {
+  gap: 14px !important;
+  padding: 8px 16px !important;
+  margin: 0 0 10px !important;
+  border-radius: 14px !important;
 }
-
-/* Keep ordinary labels and values inside the white card navy */
-.guided-section label,
-.guided-section p,
-.guided-section .field-label,
-.pre-mart-section label,
-.mart-mode-section label {
-  color: #0f2233 !important;
-  -webkit-text-fill-color: #0f2233 !important;
+.compact-price-strip > div { gap: 0 !important; }
+.compact-price-strip span {
+  font-size: 16px !important;
+  line-height: 1.1 !important;
+  font-weight: 700 !important;
 }
-
-/* Decision banner text */
-.decision-banner,
-.decision-banner *,
-.guided-decision,
-.guided-decision *,
-.quick-decision,
-.quick-decision * {
-  color: #d4af37 !important;
-  -webkit-text-fill-color: #d4af37 !important;
-}
-
-/* Ensure BID / NEAR LIMIT / STOP headings are clearly visible */
-.decision-banner h2,
-.decision-banner h3,
-.guided-decision h2,
-.guided-decision h3,
-.quick-decision {
-  color: #d4af37 !important;
-  -webkit-text-fill-color: #d4af37 !important;
-  opacity: 1 !important;
-}
-
-/* Supporting sentence in the decision banner */
-.decision-banner p,
-.guided-decision p {
-  color: #f7f1d2 !important;
-  -webkit-text-fill-color: #f7f1d2 !important;
-}
-
-
-/* Exact guided section heading colours */
-.guided-step-head h3 {
-  color: #d4af37 !important;
-  -webkit-text-fill-color: #d4af37 !important;
-}
-
-/* Keep the explanatory text beneath them muted */
-.guided-step-head p {
-  color: #66736f !important;
-  -webkit-text-fill-color: #66736f !important;
-}
-
-
-/* Exact guided headings */
-#preMartHeading,
-#martModeHeading {
-  color: #d4af37 !important;
-  -webkit-text-fill-color: #d4af37 !important;
-  opacity: 1 !important;
-}
-
-
-/* Final guided section heading colours */
-#preMartHeading,
-#martModeHeading {
-  color: #0f2233 !important;
-  -webkit-text-fill-color: #0f2233 !important;
-}
-
-
-/* Compact official factory price strip */
-.official-price-compact {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) auto !important;
-  align-items: center !important;
-  gap: 8px 18px !important;
-  padding: 16px 20px !important;
-  min-height: 0 !important;
-  border-radius: 18px !important;
-}
-
-.official-price-compact h2,
-.official-price-compact h3,
-.official-price-compact strong {
-  margin: 0 !important;
-  font-size: 1rem !important;
+.compact-price-strip small {
+  font-size: 12px !important;
   line-height: 1.2 !important;
-  color: #0f2233 !important;
-  -webkit-text-fill-color: #0f2233 !important;
 }
-
-.official-price-compact .official-price-value,
-.official-price-compact .price-value {
-  grid-column: 2 !important;
-  grid-row: 1 / span 2 !important;
-  white-space: nowrap !important;
-  font-size: 1.65rem !important;
+.compact-price-strip strong {
+  gap: 6px !important;
+  font-size: 28px !important;
   font-weight: 800 !important;
-  color: #0f2233 !important;
-  -webkit-text-fill-color: #0f2233 !important;
+  white-space: nowrap;
 }
 
-.official-price-compact p,
-.official-price-compact small {
-  margin: 2px 0 0 !important;
-  font-size: .82rem !important;
-  line-height: 1.25 !important;
-  color: #66736f !important;
-  -webkit-text-fill-color: #66736f !important;
+/* Keep workflow headings calm and readable */
+#preMartHeading,
+#martModeHeading {
+  color: #0f2233 !important;
+  -webkit-text-fill-color: #0f2233 !important;
+  margin: 0 !important;
+}
+
+/* Tighter section rhythm after removing descriptions */
+.compact-title { margin-bottom: 9px !important; }
+.compact-section { padding-top: 11px !important; }
+
+/* Make the current bid the main live-mart control */
+.compact-bid-control .compact-control-head {
+  justify-content: center !important;
+  min-height: 0 !important;
+}
+.compact-bid-control .compact-control-head > span {
+  font-size: 16px !important;
+  text-align: center;
+}
+.compact-bid-input {
+  min-height: 66px !important;
+  justify-content: center !important;
+  margin: 0 !important;
+}
+.compact-bid-input input {
+  width: 190px !important;
+  max-width: 70% !important;
+  font-size: 36px !important;
+  font-weight: 850 !important;
+  text-align: center !important;
+}
+.compact-bid-input b {
+  font-size: 22px !important;
+}
+
+/* Clear gold decision on dark green */
+.guided-decision.buy,
+.guided-decision.buy strong,
+.guided-decision.buy span {
+  color: #d4af37 !important;
+  -webkit-text-fill-color: #d4af37 !important;
 }
 
 @media (max-width: 700px) {
-  .official-price-compact {
-    padding: 13px 15px !important;
-    border-radius: 15px !important;
+  .compact-price-strip {
+    padding: 8px 12px !important;
+    margin-bottom: 8px !important;
   }
+  .compact-price-strip span { font-size: 15px !important; }
+  .compact-price-strip small { font-size: 11px !important; }
+  .compact-price-strip strong { font-size: 25px !important; }
 
-  .official-price-compact .official-price-value,
-  .official-price-compact .price-value {
-    font-size: 1.45rem !important;
+  .compact-bid-input {
+    min-height: 62px !important;
+  }
+  .compact-bid-input input {
+    width: 170px !important;
+    font-size: 34px !important;
+  }
+}
+
+
+
+/* MARTBID MART-FIRST LAYOUT V5 */
+.mart-first {
+  padding: 0 !important;
+  overflow: hidden;
+}
+.mart-first-section,
+.pre-mart-section {
+  padding: 24px 28px;
+}
+.mart-first-section {
+  background: #fff;
+}
+.mart-first-heading {
+  margin-bottom: 18px;
+}
+.mart-first-heading h2,
+.pre-mart-section h2 {
+  margin: 0;
+  color: #0f2233 !important;
+  -webkit-text-fill-color: #0f2233 !important;
+  font-size: 28px;
+}
+.mart-first-heading p {
+  margin: 4px 0 0;
+  color: #66736f !important;
+}
+.mart-first-grid {
+  display: grid;
+  grid-template-columns: minmax(190px, .8fr) minmax(280px, 1.2fr);
+  gap: 18px;
+  align-items: end;
+}
+.mart-animal-control,
+.mart-weight-control {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mart-animal-control > span,
+.mart-weight-control > label {
+  color: #0f2233 !important;
+  font-weight: 800;
+}
+.mart-animal-control select {
+  height: 56px;
+}
+.mart-weight-input {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 56px;
+  padding: 0 16px;
+  border: 2px solid #b9c8bf;
+  border-radius: 16px;
+  background: #fff;
+}
+.mart-weight-input input {
+  width: 130px !important;
+  border: 0 !important;
+  padding: 0 !important;
+  text-align: right;
+  font-size: 30px !important;
+  font-weight: 850 !important;
+}
+.mart-weight-input b {
+  margin-left: 8px;
+  color: #0f2233 !important;
+}
+.mart-max-result {
+  margin-top: 22px;
+  padding: 24px;
+  border-radius: 20px;
+  background: #eff4ed;
+  text-align: center;
+  border: 1px solid #d5ded8;
+}
+.mart-max-result > span {
+  display: block;
+  color: #0f2233 !important;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.mart-max-result strong {
+  display: block;
+  margin-top: 5px;
+  color: #0f2233 !important;
+  -webkit-text-fill-color: #0f2233 !important;
+  font-size: clamp(46px, 7vw, 72px);
+  line-height: 1;
+}
+.mart-max-result small {
+  display: block;
+  margin-top: 8px;
+  color: #66736f !important;
+  font-size: 16px;
+}
+.pre-mart-section {
+  background: #f7f8f5;
+  border-top: 1px solid #d5ded8;
+}
+.pre-mart-section h2 {
+  font-size: 22px;
+  margin-bottom: 14px;
+}
+.pre-mart-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #eef4ed;
+  border: 1px solid #d5ded8;
+}
+.pre-mart-price-row > div {
+  display: flex;
+  flex-direction: column;
+}
+.pre-mart-price-row span {
+  color: #0f2233 !important;
+  font-weight: 800;
+}
+.pre-mart-price-row small {
+  color: #66736f !important;
+}
+.pre-mart-price-row strong {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #0f2233 !important;
+  font-size: 24px;
+  white-space: nowrap;
+}
+.pre-mart-price-row input {
+  width: 72px !important;
+  border: 0 !important;
+  padding: 0 !important;
+  font: inherit;
+  background: transparent !important;
+}
+.pre-mart-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 18px;
+}
+@media (max-width: 700px) {
+  .mart-first-section,
+  .pre-mart-section {
+    padding: 20px 18px;
+  }
+  .mart-first-heading p { display: none; }
+  .mart-first-heading h2 { font-size: 25px; }
+  .mart-first-grid,
+  .pre-mart-controls {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .mart-weight-input {
+    min-height: 54px;
+  }
+  .mart-max-result {
+    margin-top: 18px;
+    padding: 20px 14px;
+  }
+  .mart-max-result strong {
+    font-size: 54px;
+  }
+  .pre-mart-price-row {
+    padding: 10px 12px;
+  }
+  .pre-mart-price-row strong {
+    font-size: 22px;
   }
 }
