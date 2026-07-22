@@ -509,4 +509,70 @@
     });
   }
 
+
+  // EXPECTED FACTORY PRICE MOBILE ENTRY
+  const expectedPriceField = $('basePrice');
+
+  if (expectedPriceField) {
+    let previousExpectedPrice = expectedPriceField.value;
+    let clearedForEditing = false;
+
+    expectedPriceField.addEventListener('focus', () => {
+      previousExpectedPrice = expectedPriceField.value;
+
+      if (!clearedForEditing) {
+        expectedPriceField.value = '';
+        clearedForEditing = true;
+      }
+    });
+
+    expectedPriceField.addEventListener('input', () => {
+      const value = Number(
+        String(expectedPriceField.value).replace(',', '.')
+      );
+
+      if (!Number.isFinite(value) || value <= 0) return;
+
+      factoryPriceMode = 'manual';
+      manualFactoryPrice = value;
+
+      if ($('quickFactoryPrice')) {
+        $('quickFactoryPrice').value = value.toFixed(2);
+      }
+
+      set('quickFactoryPriceDisplay', value.toFixed(2));
+      updateFactoryPriceModeUI();
+      calculateQuick();
+    });
+
+    expectedPriceField.addEventListener('keydown', event => {
+      if (event.key !== 'Enter') return;
+
+      event.preventDefault();
+      expectedPriceField.blur();
+    });
+
+    expectedPriceField.addEventListener('blur', () => {
+      const value = Number(
+        String(expectedPriceField.value).replace(',', '.')
+      );
+
+      if (!Number.isFinite(value) || value <= 0) {
+        expectedPriceField.value = previousExpectedPrice;
+      } else {
+        expectedPriceField.value = value.toFixed(2);
+        manualFactoryPrice = value;
+
+        if ($('quickFactoryPrice')) {
+          $('quickFactoryPrice').value = value.toFixed(2);
+        }
+
+        set('quickFactoryPriceDisplay', value.toFixed(2));
+        calculateQuick();
+      }
+
+      clearedForEditing = false;
+    });
+  }
+
 })();
