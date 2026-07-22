@@ -1055,3 +1055,12 @@ CSS
   color: #66736f !important;
   -webkit-text-fill-color: #66736f !important;
 }
+
+
+/* Exact guided headings */
+#preMartHeading,
+#martModeHeading {
+  color: #d4af37 !important;
+  -webkit-text-fill-color: #d4af37 !important;
+  opacity: 1 !important;
+}
