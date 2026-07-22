@@ -433,4 +433,17 @@
     });
   }
 
+
+  // MARTBID WEIGHT ENTER KEY
+  const weightEntry = $('quickWeight');
+
+  if (weightEntry) {
+    weightEntry.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        weightEntry.blur();
+      }
+    });
+  }
+
 })();

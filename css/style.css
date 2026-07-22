@@ -1535,3 +1535,16 @@ CSS
   }
 }
 
+
+/* MART MODE MATCHED FIELD LABELS */
+.mart-animal-control > span,
+.mart-weight-control > label {
+  display: block;
+  margin-bottom: 10px;
+  color: #0f2233 !important;
+  -webkit-text-fill-color: #0f2233 !important;
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2;
+}
+
