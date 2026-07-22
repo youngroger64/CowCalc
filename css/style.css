@@ -1064,3 +1064,65 @@ CSS
   -webkit-text-fill-color: #d4af37 !important;
   opacity: 1 !important;
 }
+
+
+/* Final guided section heading colours */
+#preMartHeading,
+#martModeHeading {
+  color: #0f2233 !important;
+  -webkit-text-fill-color: #0f2233 !important;
+}
+
+
+/* Compact official factory price strip */
+.official-price-compact {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 8px 18px !important;
+  padding: 16px 20px !important;
+  min-height: 0 !important;
+  border-radius: 18px !important;
+}
+
+.official-price-compact h2,
+.official-price-compact h3,
+.official-price-compact strong {
+  margin: 0 !important;
+  font-size: 1rem !important;
+  line-height: 1.2 !important;
+  color: #0f2233 !important;
+  -webkit-text-fill-color: #0f2233 !important;
+}
+
+.official-price-compact .official-price-value,
+.official-price-compact .price-value {
+  grid-column: 2 !important;
+  grid-row: 1 / span 2 !important;
+  white-space: nowrap !important;
+  font-size: 1.65rem !important;
+  font-weight: 800 !important;
+  color: #0f2233 !important;
+  -webkit-text-fill-color: #0f2233 !important;
+}
+
+.official-price-compact p,
+.official-price-compact small {
+  margin: 2px 0 0 !important;
+  font-size: .82rem !important;
+  line-height: 1.25 !important;
+  color: #66736f !important;
+  -webkit-text-fill-color: #66736f !important;
+}
+
+@media (max-width: 700px) {
+  .official-price-compact {
+    padding: 13px 15px !important;
+    border-radius: 15px !important;
+  }
+
+  .official-price-compact .official-price-value,
+  .official-price-compact .price-value {
+    font-size: 1.45rem !important;
+  }
+}
