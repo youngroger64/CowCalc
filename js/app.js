@@ -71,8 +71,6 @@
     }
 
     if (factoryPriceMode === 'official') {
-      $('basePrice').value = value.toFixed(2);
-
       if ($('quickFactoryPrice')) {
         $('quickFactoryPrice').value = value.toFixed(2);
       }
@@ -175,8 +173,22 @@
       ((Number($('overheadDay').value)||0) * quickDays) +
       (feedDay * quickDays);
 
+    const category = $('animalCategory').value;
+    const officialFactoryPrice =
+      Number(officialPrices?.prices?.[category]) ||
+      Number($('suggestedPrice').value) ||
+      0;
+
+    const savedManualPrice =
+      Number(localStorage.getItem('martbidExpectedFactoryPrice')) ||
+      Number(manualFactoryPrice) ||
+      Number($('basePrice').value) ||
+      0;
+
     const selectedFactoryPrice =
-      Number($('basePrice').value) || 0;
+      factoryPriceMode === 'official'
+        ? officialFactoryPrice
+        : savedManualPrice;
 
     $('quickFactoryPrice').value =
       selectedFactoryPrice.toFixed(2);
@@ -357,10 +369,32 @@
     manualPriceButton.addEventListener('click', () => {
       factoryPriceMode = 'manual';
 
-      const manualValue = Number(expectedFactoryPriceInput?.value);
+      const savedManualPrice =
+        Number(
+          localStorage.getItem(
+            'martbidExpectedFactoryPrice'
+          )
+        ) ||
+        Number(manualFactoryPrice) ||
+        Number(expectedFactoryPriceInput?.value);
 
-      if (Number.isFinite(manualValue) && manualValue > 0) {
-        quickFactoryPriceInput.value = manualValue.toFixed(2);
+      if (
+        Number.isFinite(savedManualPrice) &&
+        savedManualPrice > 0
+      ) {
+        manualFactoryPrice = savedManualPrice;
+        expectedFactoryPriceInput.value =
+          savedManualPrice.toFixed(2);
+
+        if (quickFactoryPriceInput) {
+          quickFactoryPriceInput.value =
+            savedManualPrice.toFixed(2);
+        }
+
+        set(
+          'quickFactoryPriceDisplay',
+          savedManualPrice.toFixed(2)
+        );
       }
 
       updateFactoryPriceModeUI();
