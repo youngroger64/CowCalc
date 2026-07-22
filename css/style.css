@@ -916,3 +916,78 @@ CSS
   .decision-number strong { font-size:28px; }
   .compact-decision { margin-top:10px !important; }
 }
+
+
+/* MARTBID GUIDED UI CLEANUP V3 */
+.compact-header { display: none !important; }
+
+.no-step-number {
+  gap: 0 !important;
+}
+
+.no-step-number > div {
+  width: 100%;
+}
+
+.exact-weight-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.exact-weight-entry > span:first-child {
+  margin: 0 !important;
+  color: #66736f !important;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.exact-weight-entry .compact-number-input {
+  min-width: 150px;
+  min-height: 50px;
+  justify-content: flex-end;
+  border: 2px solid #b9c8bf !important;
+  background: #fff !important;
+  box-shadow: 0 3px 10px rgba(10, 47, 37, .05);
+}
+
+.exact-weight-entry .compact-number-input:focus-within {
+  border-color: #d4af37 !important;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, .16) !important;
+}
+
+.exact-weight-entry .compact-number-input input {
+  width: 100px !important;
+  font-size: 26px !important;
+  cursor: text;
+}
+
+.compact-bid-control .compact-control-head {
+  min-height: 22px;
+}
+
+@media (max-width: 700px) {
+  .compact-guided {
+    padding-top: 12px !important;
+  }
+
+  .no-step-number {
+    margin-bottom: 8px !important;
+  }
+
+  .no-step-number h3 {
+    font-size: 24px !important;
+  }
+
+  .exact-weight-entry {
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+  }
+
+  .exact-weight-entry .compact-number-input {
+    min-width: 142px;
+    min-height: 48px;
+  }
+}
+

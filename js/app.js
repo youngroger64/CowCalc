@@ -106,7 +106,6 @@
 
     set('quickDaysLabel', `${quickDays} days`);
     set('quickProfitLabel', money(targetProfit).replace('.00',''));
-    set('quickBidDisplay', money(currentBid).replace('.00',''));
     set('quickCurrentSummary', money(currentBid).replace('.00',''));
 
     $('purchaseWeight').value = weight;
