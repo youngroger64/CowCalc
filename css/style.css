@@ -1110,10 +1110,11 @@ CSS
   color: #66736f !important;
 }
 .mart-first-grid {
-  display: grid;
-  grid-template-columns: minmax(190px, .8fr) minmax(280px, 1.2fr);
-  gap: 18px;
-  align-items: end;
+    grid-area: controls;
+    display:flex;
+    flex-direction:column;
+    gap:26px;
+    max-width:520px;
 }
 .mart-animal-control,
 .mart-weight-control {
@@ -1347,12 +1348,11 @@ CSS
 
   .mart-first-grid {
     grid-area: controls;
-    display: grid;
-    grid-template-columns: minmax(220px, .8fr) minmax(340px, 1.2fr);
-    gap: 28px;
-    align-items: end;
-    margin: 0;
-  }
+    display:flex;
+    flex-direction:column;
+    gap:26px;
+    max-width:520px;
+}
 
   .mart-max-result {
     grid-area: result;
@@ -1408,3 +1408,28 @@ CSS
   }
 }
 
+
+
+/* Stack Mart controls on desktop */
+@media (min-width:980px){
+
+.mart-animal-control{
+    max-width:420px;
+}
+
+.mart-weight-control{
+    max-width:520px;
+}
+
+.mart-weight-input{
+    max-width:300px;
+    margin-bottom:16px;
+}
+
+.mart-weight-control label{
+    display:block;
+    margin-bottom:10px;
+    font-weight:700;
+}
+
+}
