@@ -41,20 +41,29 @@
     </section>
 
     
-    <section class="quick-entry card">
-      <div class="quick-head">
+    <section class="guided-bid card" aria-labelledby="quickBidTitle">
+      <div class="guided-header">
         <div>
+          <span class="guided-kicker">Guided bid</span>
           <h2 id="quickBidTitle">Quick Bid</h2>
-          
+          <p>Set your plan, enter today’s mart figures, and see your buying limit.</p>
         </div>
         <div class="quick-status" id="quickStatus">Ready</div>
       </div>
 
-      <div class="quick-grid">
-        <label>
-          <span>Animal type</span>
-          <div class="select-wrap">
-            <select id="quickCategory">
+      <div class="guided-section">
+        <div class="guided-section-title">
+          <span>1</span>
+          <div><h3>Your plan</h3><p>The choices you control before bidding.</p></div>
+        </div>
+
+        <div class="guided-row guided-animal-row">
+          <div class="guided-copy">
+            <span class="guided-label">Animal type</span>
+            <strong id="quickCategoryLabel">Steer</strong>
+          </div>
+          <div class="select-wrap guided-select">
+            <select id="quickCategory" aria-label="Animal type">
               <option value="steer">Steer</option>
               <option value="heifer">Heifer</option>
               <option value="cow">Cow</option>
@@ -62,74 +71,92 @@
               <option value="bull">Bull</option>
             </select>
           </div>
-        </label>
+        </div>
 
-        <label>
-          <span>Live weight</span>
-          <div class="input-unit">
-            <input id="quickWeight" type="number" min="1" step="1" value="450">
-            <b>kg</b>
+        <div class="guided-row">
+          <div class="guided-copy">
+            <span class="guided-label">Days to finish</span>
+            <strong id="quickDaysLabel">90 days</strong>
           </div>
-        </label>
-
-        <label>
-          <span>Official factory price</span>
-          <div class="input-unit suggested">
-            <b>€</b>
-            <input id="quickFactoryPrice" type="number" step="0.01" readonly>
-            <b>/kg</b>
+          <div class="guided-range-wrap">
+            <input id="quickDaysSlider" class="guided-range" type="range" min="30" max="120" step="15" value="90">
+            <div class="guided-range-scale"><span>30 days</span><span>120 days</span></div>
           </div>
-        </label>
+        </div>
 
-        <label>
-          <span>Current bid</span>
-          <div class="input-unit large">
-            <b>€</b>
-            <input id="quickCurrentBid" type="number" min="0" step="10" value="1500">
-          </div>
-        </label>
-      </div>
-
-      <div class="quick-controls">
-        <div class="slider-block">
-          <div class="slider-title">
-            <span>Minimum profit wanted</span>
+        <div class="guided-row">
+          <div class="guided-copy">
+            <span class="guided-label">Minimum profit wanted</span>
             <strong id="quickProfitLabel">€100</strong>
           </div>
-          <input id="quickProfitSlider" class="profit-slider" type="range" min="0" max="300" step="10" value="100">
-          <div class="slider-scale"><span>€0</span><span>€150</span><span>€300</span></div>
-        </div>
-
-        <div class="days-block">
-          <span>Days to finish</span>
-          <div class="day-buttons" role="group" aria-label="Days to finish">
-            <button type="button" data-days="30">30 days</button>
-            <button type="button" data-days="60">60 days</button>
-            <button type="button" data-days="90" class="is-active">90 days</button>
+          <div class="guided-range-wrap">
+            <input id="quickProfitSlider" class="guided-range" type="range" min="0" max="500" step="10" value="100">
+            <div class="guided-range-scale"><span>€0</span><span>€500</span></div>
           </div>
         </div>
       </div>
 
-      <div class="quick-result">
-        <div>
-          <span>Maximum purchase price</span>
-          <strong id="quickMaxPrice">€0</strong>
-          <small id="quickMaxKg">€0.00/kg liveweight</small>
+      <div class="guided-section">
+        <div class="guided-section-title">
+          <span>2</span>
+          <div><h3>Today’s market</h3><p>The figures known at the mart.</p></div>
         </div>
-        <div class="quick-profit">
-          <span>Profit at current bid</span>
-          <strong id="quickProfit">€0</strong>
-          <small id="quickDifference">€0 below limit</small>
+
+        <div class="market-price-strip">
+          <div><span>Official factory price</span><strong><b>€</b><input id="quickFactoryPrice" type="number" step="0.01" readonly><small>/kg</small></strong></div>
+          <small>Updated from the official DAFM price feed</small>
         </div>
-        <div id="quickDecision" class="quick-decision neutral">Enter a bid</div>
+
+        <div class="guided-row guided-weight-row">
+          <div class="guided-copy">
+            <span class="guided-label">Live weight</span>
+            <div class="guided-number-unit"><input id="quickWeight" type="number" min="1" step="1" value="450"><b>kg</b></div>
+          </div>
+          <div class="guided-range-wrap">
+            <input id="quickWeightSlider" class="guided-range" type="range" min="350" max="700" step="5" value="450">
+            <div class="guided-range-scale"><span id="quickWeightMin">350 kg</span><span id="quickWeightMax">700 kg</span></div>
+          </div>
+        </div>
+
+        <div class="bid-entry-row">
+          <div class="bid-entry-copy"><span>Current bid</span><strong id="quickBidDisplay">€1,500</strong></div>
+          <div class="bid-stepper" aria-label="Adjust current bid">
+            <button type="button" data-bid-delta="-50">−50</button>
+            <button type="button" data-bid-delta="-10">−10</button>
+            <div class="bid-input"><b>€</b><input id="quickCurrentBid" type="number" min="0" step="10" value="1500"></div>
+            <button type="button" data-bid-delta="10">+10</button>
+            <button type="button" data-bid-delta="50">+50</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="guided-section guided-decision-section">
+        <div class="guided-section-title">
+          <span>3</span>
+          <div><h3>Your decision</h3><p>The two numbers to watch while bidding.</p></div>
+        </div>
+
+        <div class="guided-results">
+          <div>
+            <span>Maximum bid</span>
+            <strong id="quickMaxPrice">€0</strong>
+            <small id="quickMaxKg">€0.00/kg liveweight</small>
+          </div>
+          <div>
+            <span>Room to bid</span>
+            <strong id="quickRoom">€0</strong>
+            <small id="quickRoomLabel">Enter a current bid</small>
+          </div>
+        </div>
+
+        <div id="quickDecision" class="guided-decision neutral">
+          <strong>Enter a bid</strong>
+          <span id="quickDecisionDetail">Add the current mart bid to see your position.</span>
+        </div>
       </div>
     </section>
 
-    
 
-
-
-    
 <section class="planning-intro">
   <h2>Behind the Number</h2>
   <p>Review or customise the assumptions used to calculate your maximum bid.</p>

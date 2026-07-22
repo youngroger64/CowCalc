@@ -15,6 +15,13 @@
 
   let officialPrices = null;
   const categoryNames = {steer:'Steer',heifer:'Heifer',cow:'Cow',youngBull:'Young bull',bull:'Bull'};
+  const weightRanges = {
+    steer: {min: 350, max: 700, defaultValue: 450},
+    heifer: {min: 300, max: 650, defaultValue: 420},
+    youngBull: {min: 350, max: 750, defaultValue: 500},
+    cow: {min: 400, max: 900, defaultValue: 600},
+    bull: {min: 500, max: 1000, defaultValue: 700}
+  };
 
   function applySuggestedPrice(useIt = false) {
     if (!officialPrices) return;
@@ -52,9 +59,34 @@
 
   let quickDays = 90;
 
+  function updateQuickCategoryLabel() {
+    const category = $('quickCategory').value;
+    set('quickCategoryLabel', categoryNames[category] || 'Animal');
+  }
+
+  function syncWeightRange(resetToDefault = false) {
+    const category = $('quickCategory').value;
+    const range = weightRanges[category] || weightRanges.steer;
+    const slider = $('quickWeightSlider');
+    const input = $('quickWeight');
+
+    slider.min = range.min;
+    slider.max = range.max;
+    slider.step = 5;
+    set('quickWeightMin', `${range.min} kg`);
+    set('quickWeightMax', `${range.max} kg`);
+
+    let value = Number(input.value);
+    if (resetToDefault || !Number.isFinite(value)) value = range.defaultValue;
+    value = Math.min(range.max, Math.max(range.min, value));
+    input.value = Math.round(value);
+    slider.value = Math.round(value / 5) * 5;
+  }
+
   function syncQuickCategory() {
     const category = $('quickCategory').value;
     $('animalCategory').value = category;
+    updateQuickCategoryLabel();
     applySuggestedPrice(false);
 
     if (officialPrices) {
@@ -70,6 +102,11 @@
     const weight = Number($('quickWeight').value) || 0;
     const currentBid = Number($('quickCurrentBid').value) || 0;
     const targetProfit = Number($('quickProfitSlider').value) || 0;
+    quickDays = Number($('quickDaysSlider').value) || 90;
+
+    set('quickDaysLabel', `${quickDays} days`);
+    set('quickProfitLabel', money(targetProfit).replace('.00',''));
+    set('quickBidDisplay', money(currentBid).replace('.00',''));
 
     $('purchaseWeight').value = weight;
     $('martPriceKg').value = weight > 0 ? (currentBid / weight).toFixed(4) : 0;
@@ -78,7 +115,6 @@
 
     calculate();
 
-    // Read the underlying values directly from the same model.
     const liveGain = (Number($('dailyGain').value) || 0) * quickDays;
     const finalWeight = weight + liveGain;
     const carcass = finalWeight * ((Number($('killout').value) || 0) / 100);
@@ -90,8 +126,7 @@
       [Number($('maizeTonne').value)||0, Number($('maizeKg').value)||0]
     ];
     const feedDay = feeds.reduce((sum,[tonne,kg]) => sum + tonne/1000*kg,0);
-    const purchaseForInterest = currentBid;
-    const interest = purchaseForInterest * ((Number($('interestRate').value)||0)/100) / 365 * quickDays;
+    const interest = currentBid * ((Number($('interestRate').value)||0)/100) / 365 * quickDays;
     const finishing =
       (Number($('transport').value)||0) +
       (Number($('dose').value)||0) +
@@ -109,52 +144,41 @@
     const netFactory = carcass * paidPrice - (Number($('factoryCharges').value)||0);
     const maxPurchase = netFactory - finishing - targetProfit;
     const maxKg = weight > 0 ? maxPurchase / weight : 0;
-    const actualProfit = netFactory - finishing - currentBid;
-    const difference = maxPurchase - currentBid;
+    const room = maxPurchase - currentBid;
 
-    $('quickMaxPrice').textContent = money(maxPurchase);
-    $('quickMaxKg').textContent = money(maxKg) + '/kg liveweight';
-    $('quickProfit').textContent = money(actualProfit);
-    $('quickProfitLabel').textContent = money(targetProfit).replace('.00','');
-    const profitGap = actualProfit - targetProfit;
-    const tolerance = 0.01;
-
-    if (targetProfit <= tolerance) {
-      $('quickDifference').textContent = 'Estimated profit';
-    } else if (Math.abs(profitGap) <= tolerance) {
-      $('quickDifference').textContent = 'Target profit achieved';
-    } else if (profitGap > 0) {
-      $('quickDifference').textContent =
-        money(profitGap) + ' above target';
-    } else {
-      $('quickDifference').textContent =
-        money(Math.abs(profitGap)) + ' below target';
-    }
+    set('quickMaxPrice', money(maxPurchase));
+    set('quickMaxKg', money(maxKg) + '/kg liveweight');
+    set('quickRoom', money(Math.abs(room)));
 
     const decision = $('quickDecision');
-    decision.className = 'quick-decision';
+    decision.className = 'guided-decision';
 
     if (!currentBid) {
-      decision.textContent = 'Enter a bid';
       decision.classList.add('neutral');
-      $('quickStatus').textContent = 'Ready';
-    } else if (difference >= 50) {
-      decision.textContent = 'Bid';
+      decision.querySelector('strong').textContent = 'Enter a bid';
+      set('quickDecisionDetail', 'Add the current mart bid to see your position.');
+      set('quickRoomLabel', 'Enter a current bid');
+      set('quickStatus', 'Ready');
+    } else if (room >= 50) {
       decision.classList.add('buy');
-      $('quickStatus').textContent = 'Good margin';
-    } else if (difference >= -0.01) {
-      decision.textContent =
-        Math.abs(difference) <= 0.01 ? 'At limit' : 'Caution';
+      decision.querySelector('strong').textContent = 'Bid';
+      set('quickDecisionDetail', `You can bid another ${money(room)} before reaching your limit.`);
+      set('quickRoomLabel', 'left to bid');
+      set('quickStatus', 'Good margin');
+    } else if (room >= -0.01) {
       decision.classList.add('caution');
-      $('quickStatus').textContent =
-        Math.abs(difference) <= 0.01 ? 'Target met' : 'Near limit';
+      const atLimit = Math.abs(room) <= 0.01;
+      decision.querySelector('strong').textContent = atLimit ? 'At limit' : 'Near limit';
+      set('quickDecisionDetail', atLimit ? 'Your current bid exactly meets your target.' : `Only ${money(room)} remains before your limit.`);
+      set('quickRoomLabel', atLimit ? 'target met' : 'left to bid');
+      set('quickStatus', atLimit ? 'Target met' : 'Near limit');
     } else {
-      decision.textContent = 'Stop';
       decision.classList.add('stop');
-      $('quickStatus').textContent = 'Over limit';
+      decision.querySelector('strong').textContent = 'Stop';
+      set('quickDecisionDetail', `The current bid is ${money(Math.abs(room))} above your maximum.`);
+      set('quickRoomLabel', 'over your limit');
+      set('quickStatus', 'Over limit');
     }
-
-    signedClass($('quickProfit'), actualProfit);
   }
 
   function calculate() {
@@ -261,20 +285,32 @@
   });
 
 
-  ['quickWeight','quickCurrentBid','quickProfitSlider'].forEach(id => {
+  ['quickCurrentBid','quickProfitSlider','quickDaysSlider'].forEach(id => {
     $(id).addEventListener('input', calculateQuick);
+  });
+
+  $('quickWeight').addEventListener('input', () => {
+    const value = Number($('quickWeight').value) || 0;
+    $('quickWeightSlider').value = value;
+    calculateQuick();
+  });
+
+  $('quickWeightSlider').addEventListener('input', () => {
+    $('quickWeight').value = $('quickWeightSlider').value;
+    calculateQuick();
   });
 
   $('quickCategory').addEventListener('change', () => {
     syncQuickCategory();
+    syncWeightRange(true);
     calculateQuick();
   });
 
-  document.querySelectorAll('.day-buttons button').forEach(button => {
+  document.querySelectorAll('[data-bid-delta]').forEach(button => {
     button.addEventListener('click', () => {
-      document.querySelectorAll('.day-buttons button').forEach(b => b.classList.remove('is-active'));
-      button.classList.add('is-active');
-      quickDays = Number(button.dataset.days);
+      const input = $('quickCurrentBid');
+      input.value = Math.max(0, (Number(input.value) || 0) + Number(button.dataset.bidDelta));
+      input.blur();
       calculateQuick();
     });
   });
@@ -311,6 +347,6 @@
     } catch (_) {}
   }
 
-  loadOfficialPrices().then(() => { syncQuickCategory(); calculateQuick(); });
+  loadOfficialPrices().then(() => { syncQuickCategory(); syncWeightRange(false); calculateQuick(); });
   calculate();
 })();
