@@ -16,6 +16,7 @@
   let officialPrices = null;
   let factoryPriceMode = 'official';
   let officialPriceLabel = 'DAFM price feed';
+  let manualFactoryPrice = 0;
   const categoryNames = {steer:'Steer',heifer:'Heifer',cow:'Cow',youngBull:'Young bull',bull:'Bull'};
   const weightRanges = {
     steer: {min: 350, max: 700, defaultValue: 450},
