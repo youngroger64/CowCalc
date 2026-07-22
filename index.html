@@ -84,50 +84,39 @@
         <div class="pre-mart-price-row factory-price-selector">
           <div class="factory-price-copy">
             <span>Factory price used</span>
+            <small id="inlinePriceSource">DAFM price feed</small>
           </div>
 
-          <div class="factory-price-mode" role="radiogroup" aria-label="Factory price used">
-            <button
-              id="useOfficialPrice"
-              class="factory-price-option is-active"
-              type="button"
-              role="radio"
-              aria-checked="true"
-            >
-              <span class="factory-choice-dot" aria-hidden="true"></span>
-              <span class="factory-choice-text">
-                <b>Official average</b>
-                <small id="officialPriceChoiceValue">€0.00/kg</small>
-              </span>
+          <div class="factory-price-mode" role="group" aria-label="Factory price source">
+            <button id="useOfficialPrice" class="is-active" type="button">
+              Official average
             </button>
-
-            <button
-              id="useManualPrice"
-              class="factory-price-option"
-              type="button"
-              role="radio"
-              aria-checked="false"
-            >
-              <span class="factory-choice-dot" aria-hidden="true"></span>
-              <span class="factory-choice-text">
-                <b>My factory price</b>
-                <small id="manualPriceChoiceValue">€0.00/kg</small>
-                <em>Editable in the Factory return section below</em>
-              </span>
+            <button id="useManualPrice" type="button">
+              My factory price
             </button>
           </div>
 
-          <input
-            id="quickFactoryPrice"
-            type="hidden"
-            value="0"
-            aria-hidden="true"
-          >
-
-          <small id="inlinePriceSource" class="factory-price-source">
-            DAFM price feed
-          </small>
+          <strong class="factory-price-input">
+            <b>€</b>
+            <input
+              id="quickFactoryPrice"
+              type="number"
+              min="0"
+              step="0.01"
+              inputmode="decimal"
+              readonly
+              aria-label="Factory price used"
+            >
+            <small>/kg</small>
+          </strong>
         </div>
+
+        <div class="pre-mart-controls">
+          <div class="compact-slider-control">
+            <div class="compact-control-head"><span>Days to finish</span><strong id="quickDaysLabel">90 days</strong></div>
+            <input id="quickDaysSlider" class="guided-range" type="range" min="30" max="120" step="15" value="90">
+            <div class="guided-range-scale"><span>30 days</span><span>120 days</span></div>
+          </div>
 
           <div class="compact-slider-control">
             <div class="compact-control-head"><span>Profit wanted</span><strong id="quickProfitLabel">€100</strong></div>
